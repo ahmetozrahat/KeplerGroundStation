@@ -128,6 +128,15 @@
                         <Button Grid.Column="0" Content="BAĞLAN" Style="{StaticResource KeplerButtonStyle}" IsEnabled="False"></Button>
                         <Button Grid.Column="2" Content="BAĞLANTIYI KES" Style="{StaticResource KeplerButtonStyle}"></Button>
                     </Grid>
+                    <Separator Margin="0 16 0 16"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Paket Numarası: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
+                        <Label Name="PackageId" Content="-" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}" FontSize="16"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Toplam Alınan Paket: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
+                        <Label Name="TotalPackageCount" Content="-" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}" FontSize="16"/>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
 
@@ -145,26 +154,20 @@
 
                 <DockPanel Grid.Row="0" Margin="16">
                     <Label DockPanel.Dock="Top" Content="İrtifa Grafiği" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
-                    <Label DockPanel.Dock="Top" Content="Grafik Altbilgisi" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
-                    <lvc:CartesianChart Series="{Binding Path=AltitudeSeries}" TooltipPosition="Hidden" XAxes="{Binding Path=XAxes}" YAxes="{Binding Path=YAxes}"/>
+                    <Label Name="AltitudeDesc" DockPanel.Dock="Top" Content="-" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
+                    <lvc:CartesianChart Series="{Binding Path=AltitudeSeries}" TooltipPosition="Hidden" XAxes="{Binding Path=XAxesAltitude}" YAxes="{Binding Path=YAxesAltitude}"/>
                 </DockPanel>
 
                 <DockPanel Grid.Row="1" Margin="16">
                     <Label DockPanel.Dock="Top" Content="Basınç Grafiği" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
-                    <Label DockPanel.Dock="Top" Content="Grafik Altbilgisi" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
-                    <lvc:CartesianChart Series="{Binding Path=AltitudeSeries}" TooltipPosition="Hidden" XAxes="{Binding Path=XAxes}" YAxes="{Binding Path=YAxes}"/>
+                    <Label Name="PressureDesc" DockPanel.Dock="Top" Content="-" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
+                    <lvc:CartesianChart Series="{Binding Path=PressureSeries}" TooltipPosition="Hidden" XAxes="{Binding Path=XAxesPressure}" YAxes="{Binding Path=YAxesPressure}"/>
                 </DockPanel>
 
                 <DockPanel Grid.Row="2" Margin="16">
                     <Label DockPanel.Dock="Top" Content="Sıcaklık Grafiği" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
-                    <Label DockPanel.Dock="Top" Content="Grafik Altbilgisi" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
-                    <lvc:PieChart
-                        Series="{Binding Path=TemperatureSeries}"
-                        Foreground="White"
-                        InitialRotation="-225"
-                        MaxAngle="270"
-                        Total="100">
-                    </lvc:PieChart>
+                    <Label Name="TemperatureDesc" DockPanel.Dock="Top" Content="-" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
+                    <lvc:CartesianChart Series="{Binding Path=TemperatureSeries}" TooltipPosition="Hidden" XAxes="{Binding Path=XAxesTemperature}" YAxes="{Binding Path=YAxesTemperature}"/>
                 </DockPanel>
             </Grid>
 
@@ -184,9 +187,9 @@
                         <Label Content="İvme Z: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}"/>
                     </StackPanel>
                     <StackPanel>
-                        <Label Content="4.78 m/s" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
-                        <Label Content="-1.89 m/s" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
-                        <Label Content="2.58 m/s" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Name="AccelXLabel" Content="-" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Name="AccelYLabel" Content="-" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Name="AccelZLabel" Content="-" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
                     </StackPanel>
                     <!--Gyro Section-->
                     <StackPanel>
@@ -195,9 +198,9 @@
                         <Label Content="Gyro Z: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}"/>
                     </StackPanel>
                     <StackPanel>
-                        <Label Content="4.78 rad/s" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
-                        <Label Content="-1.89 rad/s" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
-                        <Label Content="2.58 rad/s" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Name="GyroXLabel" Content="-" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Name="GyroYLabel" Content="-" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Name="GyroZLabel" Content="-" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
                     </StackPanel>
                     <!--Divider-->
                     <Rectangle VerticalAlignment="Stretch" Fill="LightGray" Width="1" Margin="16 0 16 0"/>
@@ -208,9 +211,9 @@
                         <Label Content="Roket GPS İrtifa: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}"/>
                     </StackPanel>
                     <StackPanel>
-                        <Label Content="38.789411" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
-                        <Label Content="35.236537" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
-                        <Label Content="2789 m" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Name="RocketGPSLat" Content="-" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Name="RocketGPSLong" Content="-" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Content="-" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
                     </StackPanel>
                     <!--Divider-->
                     <Rectangle VerticalAlignment="Stretch" Fill="LightGray" Width="1" Margin="16 0 16 0"/>
@@ -221,9 +224,9 @@
                         <Label Content="G.Yük GPS İrtifa: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}"/>
                     </StackPanel>
                     <StackPanel>
-                        <Label Content="38.789411" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
-                        <Label Content="35.236537" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
-                        <Label Content="1897 m" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Content="-" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Content="-" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Content="-" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
                     </StackPanel>
                 </StackPanel>
             </Grid>
@@ -236,11 +239,11 @@
                         <RowDefinition Height="16*"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <m:Map Grid.Row="0" x:Name="myMap" Center="38.708300, 35.524262" Mode="AerialWithLabels" ZoomLevel="17" CredentialsProvider="b51vpUNL005aRs51cA2u~kbdm0iklyIh0R4Gz9KpIKw~ApvP4N6ipYiycwzwi03SSGYIpsNORpE09v9ydLKb9J6Y4aWmRt_YtAQiGlYWPwm6">
-                        <m:Pushpin Location="38.708300, 35.524262"/>
+                    <m:Map Name="KeplerMap" Grid.Row="0" Center="38.708300, 35.524262" Mode="AerialWithLabels" ZoomLevel="17" CredentialsProvider="b51vpUNL005aRs51cA2u~kbdm0iklyIh0R4Gz9KpIKw~ApvP4N6ipYiycwzwi03SSGYIpsNORpE09v9ydLKb9J6Y4aWmRt_YtAQiGlYWPwm6">
                     </m:Map>
                     <RichTextBox x:Name="SerialMonitor" Grid.Row="2" Background="Transparent">
-                        <FlowDocument Style="{StaticResource KeplerMediumFontFlow}" FontSize="14">
+                        <FlowDocument Style="{StaticResource KeplerMediumFontFlow}" FontSize="14" Foreground="White">
+                            <!--
                             <Paragraph>
                                 <Run Foreground="#05D9E8">[22:54:41]:</Run>
                                 <Run Foreground="White">01 00 33 33 F3 41 F4 73 A2 44 00 00 7A 44 00 00 7A 44 A2 BD 8C 40 A2 BD 8C 40 86 26 23 C1 74 8F 5D BD 7C 2A 1D 3C CD E2 8D 3C</Run>
@@ -253,6 +256,7 @@
                                 <Run Foreground="#05D9E8">[22:54:41]:</Run>
                                 <Run Foreground="White">01 00 33 33 F3 41 F4 73 A2 44 00 00 7A 44 00 00 7A 44 A2 BD 8C 40 A2 BD 8C 40 86 26 23 C1 74 8F 5D BD 7C 2A 1D 3C CD E2 8D 3C</Run>
                             </Paragraph>
+                            -->
                         </FlowDocument>
                     </RichTextBox>
                 </Grid>

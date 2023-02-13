@@ -8,8 +8,6 @@ using System.Windows;
 using System.Windows.Threading;
 using System.Collections.ObjectModel;
 using LiveChartsCore.Defaults;
-using LiveChartsCore.Measure;
-using System.Collections.Generic;
 using System.IO.Ports;
 using KeplerGroundStation.Model;
 using System.Windows.Input;
@@ -17,6 +15,7 @@ using GalaSoft.MvvmLight.Command;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Media;
+using Microsoft.Maps.MapControl.WPF;
 
 namespace KeplerGroundStation
 {
@@ -27,6 +26,17 @@ namespace KeplerGroundStation
     {
 
         SerialPort serialPort = new SerialPort();
+
+        private int _totalPackageNumber;
+        public int TotalPackageNumber
+        {
+            get { return _totalPackageNumber; }
+            set
+            {
+                _totalPackageNumber = value;
+                OnPropertyChanged(nameof(TotalPackageNumber));
+            }
+        }
 
         private string _currentTime;
         /// <summary>
@@ -63,10 +73,16 @@ namespace KeplerGroundStation
         public ObservableCollection<ISeries> AltitudeSeries { get; set; }
 
         /// <summary>
-        /// A obversable value for holding the temperature data.
+        /// An observable collection for holding the pressure data.
         /// </summary>
-        private readonly ObservableValue _temperatureValue;
-        public IEnumerable<ISeries> TemperatureSeries { get; set; }
+        private readonly ObservableCollection<ObservableValue> _pressureData;
+        public ObservableCollection<ISeries> PressureSeries { get; set; }
+
+        /// <summary>
+        /// An observable collection for holding the pressure data.
+        /// </summary>
+        private readonly ObservableCollection<ObservableValue> _temperatureData;
+        public ObservableCollection<ISeries> TemperatureSeries { get; set; }
 
         private ObservableCollection<string> _serialPorts;
         public ObservableCollection<string> SerialPorts
@@ -365,7 +381,7 @@ namespace KeplerGroundStation
         // ---------------------------------------------------------
 
         // XAxes for altitude chart.
-        public Axis[] XAxes { get; set; }
+        public Axis[] XAxesAltitude { get; set; }
             = new Axis[]
             {
                 new Axis
@@ -377,7 +393,21 @@ namespace KeplerGroundStation
             };
 
         // YAxes for altitude chart.
-        public Axis[] YAxes { get; set; }
+        public Axis[] YAxesAltitude { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    LabelsPaint = new SolidColorPaint(SKColors.White),
+                    TextSize = 12,
+                    MinLimit = 900,
+                    MaxLimit = 3000,
+                    SeparatorsPaint = null
+                }
+            };
+
+        // XAxes for pressure chart.
+        public Axis[] XAxesPressure { get; set; }
             = new Axis[]
             {
                 new Axis
@@ -388,10 +418,52 @@ namespace KeplerGroundStation
                 }
             };
 
+        // YAxes for pressure chart.
+        public Axis[] YAxesPressure { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    LabelsPaint = new SolidColorPaint(SKColors.White),
+                    TextSize = 12,
+                    MinLimit = 300,
+                    MaxLimit = 1100,
+                    SeparatorsPaint = null
+                }
+            };
+
+        // XAxes for temperature chart.
+        public Axis[] XAxesTemperature { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    LabelsPaint = new SolidColorPaint(SKColors.White),
+                    TextSize = 12,
+                    SeparatorsPaint = null
+                }
+            };
+
+        // YAxes for temperature chart.
+        public Axis[] YAxesTemperature { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    LabelsPaint = new SolidColorPaint(SKColors.White),
+                    TextSize = 12,
+                    MinLimit = -40,
+                    MaxLimit = 85,
+                    SeparatorsPaint = null
+                }
+            };
+
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
+
+            TotalPackageNumber = 0;
 
             FlightComputerStateString = "Bağlı Değil";
             FlightComputerStateColor = new SolidColorBrush(Color.FromRgb(237, 67, 55));
@@ -438,16 +510,31 @@ namespace KeplerGroundStation
                 }
             };
 
-            // Create temperature gauge.
-            _temperatureValue = new ObservableValue { Value = 20 };
-            TemperatureSeries = new GaugeBuilder()
-                .WithLabelsSize(50)
-                .WithInnerRadius(75)
-                .WithBackgroundInnerRadius(75)
-                .WithBackground(new SolidColorPaint(new SKColor(100, 181, 246, 90)))
-                .WithLabelsPosition(PolarLabelsPosition.ChartCenter)
-                .AddValue(_temperatureValue, "Sıcaklık")
-                .BuildSeries();
+            // Create pressure chart.
+            _pressureData = new ObservableCollection<ObservableValue>();
+            PressureSeries = new ObservableCollection<ISeries>
+            {
+                new LineSeries<ObservableValue>
+                {
+                    Values = _pressureData,
+                    GeometrySize = 0,
+                    Stroke = new SolidColorPaint(SKColors.Aqua) { StrokeThickness = 2 },
+                    DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0)
+                }
+            };
+
+            // Create temperature chart.
+            _temperatureData = new ObservableCollection<ObservableValue>();
+            TemperatureSeries = new ObservableCollection<ISeries>
+            {
+                new LineSeries<ObservableValue>
+                {
+                    Values = _temperatureData,
+                    GeometrySize = 0,
+                    Stroke = new SolidColorPaint(SKColors.Aqua) { StrokeThickness = 2 },
+                    DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0)
+                }
+            };
 
             // Setup timer for updating the UI.
             DispatcherTimer dispatcherTimer = new DispatcherTimer();
@@ -530,31 +617,66 @@ namespace KeplerGroundStation
         private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
             SerialPort sp = (SerialPort)sender;
-            string indata = sp.ReadLine();
+            
+            try
+            {
+                string indata = sp.ReadLine();
+                string[] data = indata.Split(",");
+                int packageId = int.Parse(data[0]);
+                double altitude = double.Parse(data[1], CultureInfo.InvariantCulture);
+                double pressure = double.Parse(data[2], CultureInfo.InvariantCulture) / 100.0;
+                double temperature = double.Parse(data[3], CultureInfo.InvariantCulture);
+                double gpsLat = double.Parse(data[4], CultureInfo.InvariantCulture);
+                double gpsLong = double.Parse(data[5], CultureInfo.InvariantCulture);
+                double accelx = double.Parse(data[6], CultureInfo.InvariantCulture);
+                double accely = double.Parse(data[7], CultureInfo.InvariantCulture);
+                double accelz = double.Parse(data[8], CultureInfo.InvariantCulture);
+                double gyrox = double.Parse(data[9], CultureInfo.InvariantCulture);
+                double gyroy = double.Parse(data[10], CultureInfo.InvariantCulture);
+                double gyroz = double.Parse(data[11], CultureInfo.InvariantCulture);
 
-            string[] data = indata.Split(",");
-            Trace.WriteLine("Package ID: " + data[0]);
-            Trace.WriteLine("Sıcaklık: " + data[1]);
-            Trace.WriteLine("İrtifa: " + data[2]);
-            Trace.WriteLine("GPS Enlem: " + data[3]);
-            Trace.WriteLine("GPS Boylam: " + data[4]);
-            Trace.WriteLine("İvme X: " + data[5]);
-            Trace.WriteLine("İvme Y: " + data[6]);
-            Trace.WriteLine("İvme Z: " + data[7]);
-            Trace.WriteLine("Gyro X: " + data[8]);
-            Trace.WriteLine("Gyro Y: " + data[9]);
-            Trace.WriteLine("Gyro Z: " + data[10]);
+                _altitudeData.Add(new(altitude));
+                if (_altitudeData.Count > 50) { _altitudeData.RemoveAt(0); }
 
-            int altitude = (int)double.Parse(data[2], CultureInfo.InvariantCulture);
-            int temperature = (int)double.Parse(data[1], CultureInfo.InvariantCulture);
-            double accelx = double.Parse(data[5], CultureInfo.InvariantCulture);
+                _pressureData.Add(new(pressure));
+                if (_pressureData.Count > 50) { _pressureData.RemoveAt(0); }
 
-            _altitudeData.Add(new(altitude));
-            if (_altitudeData.Count > 50) { _altitudeData.RemoveAt(0); }
+                _temperatureData.Add(new(temperature));
+                if (_temperatureData.Count > 50) { _temperatureData.RemoveAt(0); }
 
-            _temperatureValue.Value = temperature;
+                this.Dispatcher.Invoke(() =>
+                {
+                    TotalPackageCount.Content = ++TotalPackageNumber;
+                    PackageId.Content = packageId;
+                    AltitudeDesc.Content = altitude + " metre";
+                    PressureDesc.Content = pressure + " hPa";
+                    TemperatureDesc.Content = temperature + " °C";
+                    RocketGPSLat.Content = gpsLat;
+                    RocketGPSLong.Content = gpsLong;
+                    KeplerMap.Center = new Location(gpsLat, gpsLong);
+                    KeplerMap.ZoomLevel = 17;
+                    Pushpin pin = new Pushpin();
+                    pin.Location = new Location(gpsLat, gpsLong);
+                    KeplerMap.Children.Clear();
+                    KeplerMap.Children.Add(pin);
+                    AccelXLabel.Content = accelx + " m/s";
+                    AccelYLabel.Content = accely + " m/s";
+                    AccelZLabel.Content = accelz + " m/s";
+                    GyroXLabel.Content = gyrox + " rad/s";
+                    GyroYLabel.Content = gyroy + " rad/s";
+                    GyroZLabel.Content = gyroz + " rad/s";
 
-            _accelerationX = accelx;
+                    DateTime dateTime = DateTime.Now;
+
+                    SerialMonitor.AppendText("[" + dateTime.ToString("HH:mm:ss") + "]: " + indata + "\n");
+                    SerialMonitor.ScrollToEnd();
+                }
+                );
+            } 
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.Message);
+            }
         }
     }
 }
