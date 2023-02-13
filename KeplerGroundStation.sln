@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeplerGroundStation", "KeplerGroundStation\KeplerGroundStation.csproj", "{A784DEDD-CF6B-4404-913E-910271E76209}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A784DEDD-CF6B-4404-913E-910271E76209}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A784DEDD-CF6B-4404-913E-910271E76209}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A784DEDD-CF6B-4404-913E-910271E76209}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A784DEDD-CF6B-4404-913E-910271E76209}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3B7EA1AD-2678-4817-BC9B-23A2B5C8B05C}
+	EndGlobalSection
+EndGlobal

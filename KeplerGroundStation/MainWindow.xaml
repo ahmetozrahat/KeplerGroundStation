@@ -1,0 +1,281 @@
+﻿<Window x:Class="KeplerGroundStation.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KeplerGroundStation"
+        mc:Ignorable="d"
+        Title="Kepler Roket Takımı - Yer İstasyonu" Height="1080" Width="1920"
+        xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF" xmlns:m="clr-namespace:Microsoft.Maps.MapControl.WPF;assembly=Microsoft.Maps.MapControl.WPF"
+        xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding">
+
+    <!--The main grid-->
+    <Grid
+        Background="Black">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="110*"></RowDefinition>
+            <RowDefinition Height="900*"></RowDefinition>
+            <RowDefinition Height="70*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" BorderThickness="1" BorderBrush="White"/>
+        <Border Grid.Row="1" BorderThickness="1" BorderBrush="White"/>
+        <Border Grid.Row="2" BorderThickness="1" BorderBrush="White"/>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="136*"></ColumnDefinition>
+                <ColumnDefinition Width="1648*"></ColumnDefinition>
+                <ColumnDefinition Width="136*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <!--Row 0 items-->
+            <Image Grid.Column="0" Source="pack://application:,,,/Images/Kepler_Logo.png" RenderOptions.BitmapScalingMode="HighQuality" Margin="0 16 0 16"></Image>
+            <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label Content="Kepler Roket Takımı Yer İstasyonu Yazılımı" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="24"/>
+                <Label Content="v1.0" Foreground="LightGray" HorizontalAlignment="Center" Style="{StaticResource KeplerMediumFont}" FontSize="24"/>
+            </StackPanel>
+            <Image Grid.Column="2" Source="pack://application:,,,/Images/Teknofest_Logo.png" RenderOptions.BitmapScalingMode="HighQuality" Margin="0 16 0 16"></Image>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"></ColumnDefinition>
+                <ColumnDefinition Width="3*"></ColumnDefinition>
+                <ColumnDefinition Width="6*"></ColumnDefinition>
+                <ColumnDefinition Width="4*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" BorderThickness="1" BorderBrush="White"/>
+            <Border Grid.Column="1" BorderThickness="1" BorderBrush="White"/>
+            <Border Grid.Column="2" BorderThickness="1" BorderBrush="White"/>
+            <Border Grid.Column="3" BorderThickness="1" BorderBrush="White"/>
+
+            <Grid Grid.Column="0" Margin="16">
+                <StackPanel>
+                    <!--Flight Computer Connection Section-->
+                    <Label DockPanel.Dock="Top" Content="Aviyonik Sistem Bağlantısı" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="14"/>
+                    <StackPanel Orientation="Horizontal" Margin="0 -8 0 0">
+                        <Label DockPanel.Dock="Top" Content="{Binding Path=FlightComputerStateString}" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}" FontSize="12"/>
+                        <Ellipse Width="12" Height="12" Fill="{Binding Path=FlightComputerStateColor}" Margin="8 0 0 0"/>
+                    </StackPanel>
+                    <DockPanel Margin="0 8 0 0">
+                        <Label Content="Port:" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
+                        <ComboBox Width="100" Height="25" HorizontalAlignment="Right" ItemsSource="{Binding Path=SerialPorts}" SelectedItem="{Binding Path=SelectedSerialPort1}"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 8 0 0">
+                        <Label Content="Baud Rate:" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
+                        <ComboBox Width="100" Height="25" HorizontalAlignment="Right" ItemsSource="{Binding Path=BaudRates}" SelectedItem="{Binding Path=SelectedBaudRate1}"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 8 0 0">
+                        <Label Content="Parity:" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
+                        <ComboBox Width="100" Height="25" HorizontalAlignment="Right" ItemsSource="{Binding Path=Parities}" SelectedItem="{Binding Path=SelectedParity1}"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 8 0 0">
+                        <Label Content="Data Bits:" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
+                        <ComboBox Width="100" Height="25" HorizontalAlignment="Right" ItemsSource="{Binding Path=DataBits}" SelectedItem="{Binding Path=SelectedDataBits1}"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 8 0 0">
+                        <Label Content="Stop Bits:" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
+                        <ComboBox Width="100" Height="25" HorizontalAlignment="Right" ItemsSource="{Binding Path=StopBits}" SelectedItem="{Binding Path=SelectedStopBits1}"/>
+                    </DockPanel>
+                    <Grid Margin="0 16 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="8*"></ColumnDefinition>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                            <ColumnDefinition Width="8*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0" Content="BAĞLAN" Style="{StaticResource KeplerButtonStyle}" Command="{Binding Path=ConnectFlightComputerClicked}" IsEnabled="{c:Binding !IsFlightComputerConnected}"/>
+                        <Button Grid.Column="2" Content="BAĞLANTIYI KES" Style="{StaticResource KeplerButtonStyle}" Command="{Binding Path=DisconnectFlightComputerClicked}" IsEnabled="{Binding Path=IsFlightComputerConnected}"/>
+                    </Grid>
+
+                    <Separator Margin="0 16 0 16"></Separator>
+
+                    <!--Referee Computer Connection Section-->
+                    <Label DockPanel.Dock="Top" Content="Aviyonik Sistem Bağlantısı" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="14"/>
+                    <StackPanel Orientation="Horizontal" Margin="0 -8 0 0">
+                        <Label DockPanel.Dock="Top" Content="{Binding Path=RefereeComputerStateString}" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}" FontSize="12"/>
+                        <Ellipse Width="12" Height="12" Fill="{Binding Path=RefereeComputerStateColor}" Margin="8 0 0 0"/>
+                    </StackPanel>
+                    <DockPanel Margin="0 8 0 0">
+                        <Label Content="Port:" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
+                        <ComboBox Width="100" Height="25" HorizontalAlignment="Right" ItemsSource="{Binding Path=SerialPorts}" SelectedItem="{Binding Path=SelectedSerialPort2}"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 8 0 0">
+                        <Label Content="Baud Rate:" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
+                        <ComboBox Width="100" Height="25" HorizontalAlignment="Right" ItemsSource="{Binding Path=BaudRates}" SelectedItem="{Binding Path=SelectedBaudRate2}"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 8 0 0">
+                        <Label Content="Parity:" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
+                        <ComboBox Width="100" Height="25" HorizontalAlignment="Right" ItemsSource="{Binding Path=Parities}" SelectedItem="{Binding Path=SelectedParity2}"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 8 0 0">
+                        <Label Content="Data Bits:" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
+                        <ComboBox Width="100" Height="25" HorizontalAlignment="Right" ItemsSource="{Binding Path=DataBits}" SelectedItem="{Binding Path=SelectedDataBits2}"/>
+                    </DockPanel>
+                    <DockPanel Margin="0 8 0 0">
+                        <Label Content="Stop Bits:" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
+                        <ComboBox Width="100" Height="25" HorizontalAlignment="Right" ItemsSource="{Binding Path=StopBits}" SelectedItem="{Binding Path=SelectedStopBits2}"/>
+                    </DockPanel>
+                    <Grid Margin="0 16 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="8*"></ColumnDefinition>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                            <ColumnDefinition Width="8*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0" Content="BAĞLAN" Style="{StaticResource KeplerButtonStyle}" IsEnabled="False"></Button>
+                        <Button Grid.Column="2" Content="BAĞLANTIYI KES" Style="{StaticResource KeplerButtonStyle}"></Button>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+
+            <!--Row 1 items-->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" BorderThickness="1" BorderBrush="White"/>
+                <Border Grid.Row="1" BorderThickness="1" BorderBrush="White"/>
+                <Border Grid.Row="2" BorderThickness="1" BorderBrush="White"/>
+
+                <DockPanel Grid.Row="0" Margin="16">
+                    <Label DockPanel.Dock="Top" Content="İrtifa Grafiği" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
+                    <Label DockPanel.Dock="Top" Content="Grafik Altbilgisi" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
+                    <lvc:CartesianChart Series="{Binding Path=AltitudeSeries}" TooltipPosition="Hidden" XAxes="{Binding Path=XAxes}" YAxes="{Binding Path=YAxes}"/>
+                </DockPanel>
+
+                <DockPanel Grid.Row="1" Margin="16">
+                    <Label DockPanel.Dock="Top" Content="Basınç Grafiği" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
+                    <Label DockPanel.Dock="Top" Content="Grafik Altbilgisi" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
+                    <lvc:CartesianChart Series="{Binding Path=AltitudeSeries}" TooltipPosition="Hidden" XAxes="{Binding Path=XAxes}" YAxes="{Binding Path=YAxes}"/>
+                </DockPanel>
+
+                <DockPanel Grid.Row="2" Margin="16">
+                    <Label DockPanel.Dock="Top" Content="Sıcaklık Grafiği" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
+                    <Label DockPanel.Dock="Top" Content="Grafik Altbilgisi" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
+                    <lvc:PieChart
+                        Series="{Binding Path=TemperatureSeries}"
+                        Foreground="White"
+                        InitialRotation="-225"
+                        MaxAngle="270"
+                        Total="100">
+                    </lvc:PieChart>
+                </DockPanel>
+            </Grid>
+
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="5*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" BorderThickness="1" BorderBrush="White"/>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="16" VerticalAlignment="Center">
+                    <!--Acceleration Section-->
+                    <StackPanel>
+                        <Label Content="İvme X: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}"/>
+                        <Label Content="İvme Y: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}"/>
+                        <Label Content="İvme Z: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="4.78 m/s" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Content="-1.89 m/s" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Content="2.58 m/s" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                    </StackPanel>
+                    <!--Gyro Section-->
+                    <StackPanel>
+                        <Label Content="Gyro X: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}"/>
+                        <Label Content="Gyro Y: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}"/>
+                        <Label Content="Gyro Z: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="4.78 rad/s" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Content="-1.89 rad/s" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Content="2.58 rad/s" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                    </StackPanel>
+                    <!--Divider-->
+                    <Rectangle VerticalAlignment="Stretch" Fill="LightGray" Width="1" Margin="16 0 16 0"/>
+                    <!--Rocket GPS Section-->
+                    <StackPanel>
+                        <Label Content="Roket GPS Enlem: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}"/>
+                        <Label Content="Roket GPS Boylam: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}"/>
+                        <Label Content="Roket GPS İrtifa: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="38.789411" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Content="35.236537" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Content="2789 m" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                    </StackPanel>
+                    <!--Divider-->
+                    <Rectangle VerticalAlignment="Stretch" Fill="LightGray" Width="1" Margin="16 0 16 0"/>
+                    <!--Payload GPS Section-->
+                    <StackPanel>
+                        <Label Content="G.Yük GPS Enlem: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}"/>
+                        <Label Content="G.Yük GPS Boylam: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}"/>
+                        <Label Content="G.Yük GPS İrtifa: " Foreground="White" Style="{StaticResource KeplerSemiboldFont}"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="38.789411" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Content="35.236537" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                        <Label Content="1897 m" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Column="3" Margin="16">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="16*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
+                        <RowDefinition Height="16*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <m:Map Grid.Row="0" x:Name="myMap" Center="38.708300, 35.524262" Mode="AerialWithLabels" ZoomLevel="17" CredentialsProvider="b51vpUNL005aRs51cA2u~kbdm0iklyIh0R4Gz9KpIKw~ApvP4N6ipYiycwzwi03SSGYIpsNORpE09v9ydLKb9J6Y4aWmRt_YtAQiGlYWPwm6">
+                        <m:Pushpin Location="38.708300, 35.524262"/>
+                    </m:Map>
+                    <RichTextBox x:Name="SerialMonitor" Grid.Row="2" Background="Transparent">
+                        <FlowDocument Style="{StaticResource KeplerMediumFontFlow}" FontSize="14">
+                            <Paragraph>
+                                <Run Foreground="#05D9E8">[22:54:41]:</Run>
+                                <Run Foreground="White">01 00 33 33 F3 41 F4 73 A2 44 00 00 7A 44 00 00 7A 44 A2 BD 8C 40 A2 BD 8C 40 86 26 23 C1 74 8F 5D BD 7C 2A 1D 3C CD E2 8D 3C</Run>
+                            </Paragraph>
+                            <Paragraph>
+                                <Run Foreground="#05D9E8">[22:54:41]:</Run>
+                                <Run Foreground="White">01 00 33 33 F3 41 F4 73 A2 44 00 00 7A 44 00 00 7A 44 A2 BD 8C 40 A2 BD 8C 40 86 26 23 C1 74 8F 5D BD 7C 2A 1D 3C CD E2 8D 3C</Run>
+                            </Paragraph>
+                            <Paragraph>
+                                <Run Foreground="#05D9E8">[22:54:41]:</Run>
+                                <Run Foreground="White">01 00 33 33 F3 41 F4 73 A2 44 00 00 7A 44 00 00 7A 44 A2 BD 8C 40 A2 BD 8C 40 86 26 23 C1 74 8F 5D BD 7C 2A 1D 3C CD E2 8D 3C</Run>
+                            </Paragraph>
+                        </FlowDocument>
+                    </RichTextBox>
+                </Grid>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <!--Row 2 items-->
+            <StackPanel Grid.Column="0" Margin="8">
+                <Label Content="Görev Durumu" Foreground="White" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
+                <Label Content="Görev Yükü Fırlatıldı" Foreground="LightGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
+            </StackPanel>
+            <Label Grid.Column="1" Content="Uçuş Süresi: T+32sn" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"  Style="{StaticResource KeplerSemiboldFont}" FontSize="24"/>
+            <StackPanel Grid.Column="2" Margin="8">
+                <Label Content="{Binding Path=CurrentDate}" Foreground="White" HorizontalAlignment="Right" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
+                <Label Content="{Binding Path=CurrentTime}" Foreground="LightGray" HorizontalAlignment="Right" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
