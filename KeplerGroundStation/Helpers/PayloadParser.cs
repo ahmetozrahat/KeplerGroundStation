@@ -1,32 +1,28 @@
 ﻿using KeplerGroundStation.Model;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KeplerGroundStation.Helpers
 {
     internal class PayloadParser
     {
-        public static PayloadData ParsePayloadData(String incomingData)
+        public static PayloadData ParsePayloadData(byte[] incomingData)
         {
-            string[] data = incomingData.Split(",");
-            int packageId = int.Parse(data[0]);
-            double altitude = double.Parse(data[1], CultureInfo.InvariantCulture);
-            double pressure = double.Parse(data[2], CultureInfo.InvariantCulture) / 100.0;
-            double temperature = double.Parse(data[3], CultureInfo.InvariantCulture);
-            double gpsLat = double.Parse(data[4], CultureInfo.InvariantCulture);
-            double gpsLong = double.Parse(data[5], CultureInfo.InvariantCulture);
-            double accelx = double.Parse(data[6], CultureInfo.InvariantCulture);
-            double accely = double.Parse(data[7], CultureInfo.InvariantCulture);
-            double accelz = double.Parse(data[8], CultureInfo.InvariantCulture);
-            double gyrox = double.Parse(data[9], CultureInfo.InvariantCulture);
-            double gyroy = double.Parse(data[10], CultureInfo.InvariantCulture);
-            double gyroz = double.Parse(data[11], CultureInfo.InvariantCulture);
+            short deviceId = BitConverter.ToInt16(incomingData, 2);
+            short packageId = BitConverter.ToInt16(incomingData, 4);
+            short flightStatus = BitConverter.ToInt16(incomingData, 6);
+            double temperature = BitConverter.ToSingle(incomingData, 8);
+            double altitude = BitConverter.ToSingle(incomingData, 12);
+            double pressure = BitConverter.ToSingle(incomingData, 16) / 100.0;
+            double gpsLat = BitConverter.ToSingle(incomingData, 20);
+            double gpsLng = BitConverter.ToSingle(incomingData, 24);
+            double accelx = BitConverter.ToSingle(incomingData, 28);
+            double accely = BitConverter.ToSingle(incomingData, 32);
+            double accelz = BitConverter.ToSingle(incomingData, 36);
+            double gyrox = BitConverter.ToSingle(incomingData, 40);
+            double gyroy = BitConverter.ToSingle(incomingData, 44);
+            double gyroz = BitConverter.ToSingle(incomingData, 48);
 
-            return new PayloadData(packageId, temperature, altitude, pressure, gpsLat, gpsLong, accelx, accely, accelz, gyrox, gyroy, gyroz);
+            return new PayloadData(deviceId, packageId, flightStatus, temperature, altitude, pressure, gpsLat, gpsLng, accelx, accely, accelz, gyrox, gyroy, gyroz);
         }
     }
 }

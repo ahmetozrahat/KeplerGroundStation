@@ -13,7 +13,7 @@ namespace KeplerGroundStation.ViewModel
             {
                 new Axis
                 {
-                    LabelsPaint = new SolidColorPaint(SKColors.White),
+                    LabelsPaint = new SolidColorPaint(SKColors.DarkGray),
                     TextSize = 12,
                     SeparatorsPaint = null
                 }
@@ -25,7 +25,7 @@ namespace KeplerGroundStation.ViewModel
             {
                 new Axis
                 {
-                    LabelsPaint = new SolidColorPaint(SKColors.White),
+                    LabelsPaint = new SolidColorPaint(SKColors.DarkGray),
                     TextSize = 12,
                     MinLimit = 900,
                     MaxLimit = 3000,
@@ -39,7 +39,7 @@ namespace KeplerGroundStation.ViewModel
             {
                 new Axis
                 {
-                    LabelsPaint = new SolidColorPaint(SKColors.White),
+                    LabelsPaint = new SolidColorPaint(SKColors.DarkGray),
                     TextSize = 12,
                     SeparatorsPaint = null
                 }
@@ -51,7 +51,7 @@ namespace KeplerGroundStation.ViewModel
             {
                 new Axis
                 {
-                    LabelsPaint = new SolidColorPaint(SKColors.White),
+                    LabelsPaint = new SolidColorPaint(SKColors.DarkGray),
                     TextSize = 12,
                     MinLimit = 300,
                     MaxLimit = 1100,
@@ -65,7 +65,7 @@ namespace KeplerGroundStation.ViewModel
             {
                 new Axis
                 {
-                    LabelsPaint = new SolidColorPaint(SKColors.White),
+                    LabelsPaint = new SolidColorPaint(SKColors.DarkGray),
                     TextSize = 12,
                     SeparatorsPaint = null
                 }
@@ -77,7 +77,87 @@ namespace KeplerGroundStation.ViewModel
             {
                 new Axis
                 {
-                    LabelsPaint = new SolidColorPaint(SKColors.White),
+                    LabelsPaint = new SolidColorPaint(SKColors.DarkGray),
+                    TextSize = 12,
+                    MinLimit = -40,
+                    MaxLimit = 85,
+                    SeparatorsPaint = null
+                }
+            };
+
+        // --------------------------------------------------------------------
+
+        // XAxes for payload pressure chart.
+        public Axis[] XAxesPayloadPressure { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    LabelsPaint = new SolidColorPaint(SKColors.DarkGray),
+                    TextSize = 12,
+                    SeparatorsPaint = null
+                }
+            };
+
+        // YAxes for payload pressure chart.
+        public Axis[] YAxesPayloadPressure { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    LabelsPaint = new SolidColorPaint(SKColors.DarkGray),
+                    TextSize = 12,
+                    MinLimit = 300,
+                    MaxLimit = 1100,
+                    SeparatorsPaint = null
+                }
+            };
+
+        // XAxes for humidity chart.
+        public Axis[] XAxesHumidity { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    LabelsPaint = new SolidColorPaint(SKColors.DarkGray),
+                    TextSize = 12,
+                    SeparatorsPaint = null
+                }
+            };
+
+        // YAxes for humidity chart.
+        public Axis[] YAxesHumidity { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    LabelsPaint = new SolidColorPaint(SKColors.DarkGray),
+                    TextSize = 12,
+                    MinLimit = 0,
+                    MaxLimit = 100,
+                    SeparatorsPaint = null
+                }
+            };
+
+        // XAxes for payload temperature chart.
+        public Axis[] XAxesPayloadTemperature { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    LabelsPaint = new SolidColorPaint(SKColors.DarkGray),
+                    TextSize = 12,
+                    SeparatorsPaint = null
+                }
+            };
+
+        // YAxes for payload temperature chart.
+        public Axis[] YAxesPayloadTemperature { get; set; }
+            = new Axis[]
+            {
+                new Axis
+                {
+                    LabelsPaint = new SolidColorPaint(SKColors.DarkGray),
                     TextSize = 12,
                     MinLimit = -40,
                     MaxLimit = 85,

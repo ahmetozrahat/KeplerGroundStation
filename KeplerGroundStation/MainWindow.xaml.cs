@@ -12,6 +12,7 @@ using Microsoft.Maps.MapControl.WPF;
 using System.Windows.Documents;
 using KeplerGroundStation.Helpers;
 using KeplerGroundStation.ViewModel;
+using System.Globalization;
 
 namespace KeplerGroundStation
 {
@@ -109,8 +110,23 @@ namespace KeplerGroundStation
             }
         }
 
+        private ICommand _updateLocationClicked;
+        public ICommand UpdateLocationClicked
+        {
+            get { return _updateLocationClicked; }
+            set
+            {
+                _updateLocationClicked = value;
+                OnPropertyChanged(nameof(UpdateLocationClicked));
+            }
+        }
+
         private PayloadData _payloadData;
         private System.Timers.Timer _refereeComputerTimer;
+        private byte[] receivedBytes = new byte[52];
+        private int receivedBytesCount = 0;
+        double groundLat = 0;
+        double groundLon = 0;
 
         public MainWindow()
         {
@@ -134,6 +150,8 @@ namespace KeplerGroundStation
 
             _connectRefereeComputerClicked = new RelayCommand(HandleConnectRefereeComputerClicked);
             _disconnectRefereeComputerClicked = new RelayCommand(HandleDisconnectRefereeComputerClicked);
+
+            _updateLocationClicked = new RelayCommand(HandleUpdateLocationClicked);
 
             FlightComputerSerialPort = new SerialPortViewModel(FlightComputerDataReceivedHandler);
             RefereeComputerSerialPort = new SerialPortViewModel();
@@ -235,14 +253,33 @@ namespace KeplerGroundStation
 
         // --------------------------------------------
 
+        // ----- Update Location Section -----
+
+        private void HandleUpdateLocationClicked()
+        {
+            try
+            {
+                groundLat = double.Parse(GroundStationLat.Text, CultureInfo.InvariantCulture);
+                groundLon = double.Parse(GroundStationLng.Text, CultureInfo.InvariantCulture);
+            } catch (Exception e)
+            {
+                Trace.WriteLine(e.ToString());
+            }
+        }
+
+        // --------------------------------------------
+
         private void FlightComputerDataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
             SerialPort sp = (SerialPort)sender;
-            
+
+            int bytesToRead = sp.BytesToRead;
+            byte[] buffer = new byte[bytesToRead];
+            sp.Read(buffer, 0, bytesToRead);
+
             try
             {
-                string indata = sp.ReadLine();
-                _payloadData = PayloadParser.ParsePayloadData(indata);
+                _payloadData = PayloadParser.ParsePayloadData(buffer);
 
                 // Perform the UI updates in a seperate Thread.
                 Dispatcher.Invoke(() =>
@@ -253,7 +290,7 @@ namespace KeplerGroundStation
                     UpdateAltitude();
                     UpdateMap();
                     UpdateAccelerationData();
-                    AddRowDataToConsole(indata);
+                    AddRowDataToConsole(buffer);
                 }
                 );
             } 
@@ -278,7 +315,7 @@ namespace KeplerGroundStation
         /// </summary>
         private void UpdateTemperature()
         {
-            TemperatureDesc.Content = DataFormatter.formatTemperature(_payloadData.Temperature);
+            TemperatureDesc.Content = DataFormatter.FormatTemperature(_payloadData.Temperature);
             RocketData.AddTemperatureData(_payloadData.Temperature);
         }
 
@@ -288,7 +325,7 @@ namespace KeplerGroundStation
         /// </summary>
         private void UpdatePressure()
         {
-            PressureDesc.Content = DataFormatter.formatPressure(_payloadData.Pressure);
+            PressureDesc.Content = DataFormatter.FormatPressure(_payloadData.Pressure);
             RocketData.AddPressureData(_payloadData.Pressure);
         }
 
@@ -298,7 +335,7 @@ namespace KeplerGroundStation
         /// </summary>
         private void UpdateAltitude()
         {
-            AltitudeDesc.Content = DataFormatter.formatDistanceMeters(_payloadData.Altitude);
+            AltitudeDesc.Content = DataFormatter.FormatDistanceMeters(_payloadData.Altitude);
             RocketData.AddAltitudeData(_payloadData.Altitude);
         }
 
@@ -313,14 +350,8 @@ namespace KeplerGroundStation
                 return;
             }
 
-            RocketGPSLat.Content = _payloadData.GpsLat;
-            RocketGPSLong.Content = _payloadData.GpsLong;
-
-            double groundLat = 38.769628; // Teknopark // 38.769628; // Mimarsinanbahcelievler
-            double groundLon = 35.583048; // 35.583048;
-
-            double dummyLat = 38.643833;  // Mühendislik // 38.643833; // Malatya yolu
-            double dummyLon = 35.701681; // 35.701681;
+            RocketGPSLat.Content = DataFormatter.FormatLocation(_payloadData.GpsLat);
+            RocketGPSLong.Content = DataFormatter.FormatLocation(_payloadData.GpsLong);
 
             // Create push pin for ground station.
             Pushpin pinGround = new()
@@ -332,7 +363,7 @@ namespace KeplerGroundStation
             // Create push pin for flight computer.
             Pushpin pinRocket = new()
             {
-                Location = new Location(dummyLat, dummyLon),
+                Location = new Location(_payloadData.GpsLat, _payloadData.GpsLong),
                 Background = new SolidColorBrush(Color.FromArgb(255, 255, 102, 100))
             };
 
@@ -346,7 +377,7 @@ namespace KeplerGroundStation
             var locations = new LocationCollection()
             {
                 new Location(groundLat, groundLon),
-                new Location(dummyLat, dummyLon)
+                new Location(_payloadData.GpsLat, _payloadData.GpsLong)
             };
 
             // Style the polygon.
@@ -361,8 +392,8 @@ namespace KeplerGroundStation
             KeplerMap.SetView(locations, new Thickness(50, 50, 50, 50), 0);
 
             // Calculate the distance between two coordinates and update it in the GUI.
-            double distance = DistanceCalculator.GetDistanceDifference(groundLat, groundLon, dummyLat, dummyLon);
-            DistanceDesc.Content = ValueFormatter.FormatDistance(distance);
+            double distance = DistanceCalculator.GetDistanceDifference(groundLat, groundLon, _payloadData.GpsLat, _payloadData.GpsLong);
+            DistanceDesc.Content = DataFormatter.FormatDistance(distance);
         }
 
         /// <summary>
@@ -371,15 +402,15 @@ namespace KeplerGroundStation
         /// </summary>
         private void UpdateAccelerationData()
         {
-            AccelXLabel.Content = DataFormatter.formatAcceleration(_payloadData.AccelerationX);
-            AccelYLabel.Content = DataFormatter.formatAcceleration(_payloadData.AccelerationY);
-            AccelZLabel.Content = DataFormatter.formatAcceleration(_payloadData.AccelerationZ);
-            GyroXLabel.Content = DataFormatter.formatGyro(_payloadData.GyroX);
-            GyroYLabel.Content = DataFormatter.formatGyro(_payloadData.GyroY);
-            GyroZLabel.Content = DataFormatter.formatGyro(_payloadData.GyroZ);
+            AccelXLabel.Content = DataFormatter.FormatAcceleration(_payloadData.AccelerationX);
+            AccelYLabel.Content = DataFormatter.FormatAcceleration(_payloadData.AccelerationY);
+            AccelZLabel.Content = DataFormatter.FormatAcceleration(_payloadData.AccelerationZ);
+            GyroXLabel.Content = DataFormatter.FormatGyro(_payloadData.GyroX);
+            GyroYLabel.Content = DataFormatter.FormatGyro(_payloadData.GyroY);
+            GyroZLabel.Content = DataFormatter.FormatGyro(_payloadData.GyroZ);
 
-            int tiltAngle = AngleCalculator.CalculateTiltAngle(_payloadData.AccelerationY, _payloadData.AccelerationZ);
-            RocketAngle.Content = DataFormatter.formatAngle(tiltAngle);
+            float tiltAngle = AngleCalculator.CalculateTiltAngle(_payloadData.AccelerationY, _payloadData.AccelerationZ);
+            RocketAngle.Content = DataFormatter.FormatAngle(tiltAngle);
         }
 
 
@@ -387,18 +418,18 @@ namespace KeplerGroundStation
         /// Prints the raw incoming data to the console with formatted output.
         /// </summary>
         /// <param name="data">The incoming data from serial port.</param>
-        private void AddRowDataToConsole(string data)
+        private void AddRowDataToConsole(byte[] data)
         {
             DateTime dateTime = DateTime.Now;
 
             Run timeStampRun = new("[" + dateTime.ToString("HH:mm:ss") + "]: ")
             {
-                Foreground = new SolidColorBrush(Colors.Aqua)
+                Foreground = new SolidColorBrush(Color.FromRgb(70, 130, 180))
             };
 
-            Run dataRun = new(data)
+            Run dataRun = new(DataFormatter.FormatByteArray(data))
             {
-                Foreground = new SolidColorBrush(Colors.White)
+                Foreground = new SolidColorBrush(Colors.DarkGray)
             };
 
             Paragraph paragraph = new();

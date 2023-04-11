@@ -19,12 +19,17 @@
         <Style x:Key="KeplerMediumFontFlow" TargetType="FlowDocument">
             <Setter Property="FontFamily" Value="pack://application:,,,/Fonts/#Cooper Hewitt Medium"/>
         </Style>
-        
+
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="FontFamily" Value="pack://application:,,,/Fonts/#Cooper Hewitt Medium" />
+            <Setter Property="Foreground" Value="Gray"/>
+        </Style>
+
         <!--Button Customization-->
         <Style x:Key="KeplerButtonStyle" TargetType="Button">
             <Setter Property="FontFamily" Value="pack://application:,,,/Fonts/#Cooper Hewitt Medium"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="Black"/>
             <Setter Property="Height" Value="30"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
@@ -33,7 +38,7 @@
                         <Border Background="{TemplateBinding Background}"
                             CornerRadius="4"
                             BorderThickness="1"
-                            BorderBrush="White">
+                            BorderBrush="Black">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
 
                             </ContentPresenter>
@@ -43,12 +48,12 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="Background" Value="LightGray"/>
                     <Setter Property="Foreground" Value="Black"/>
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
                     <Setter Property="Opacity" Value="1"/>
-                    <Setter Property="Foreground" Value="LightGray"/>
+                    <Setter Property="Foreground" Value="DarkGray"/>
                     <Setter Property="Background" Value="Transparent"/>
                     <Setter Property="Template">
                         <Setter.Value>
@@ -67,7 +72,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        
+
         <!--Combo Box Customization-->
     </Application.Resources>
 </Application>

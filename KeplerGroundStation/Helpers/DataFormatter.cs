@@ -1,41 +1,74 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
+using System;
 
 namespace KeplerGroundStation.Helpers
 {
     public class DataFormatter
     {
-        public static string formatAcceleration(double accel)
+        public static string FormatAcceleration(double accel)
         {
-            return accel + " m/s";
+            return accel.ToString("F") + " m/s";
         }
 
-        public static string formatGyro(double gyro)
+        public static string FormatGyro(double gyro)
         {
-            return gyro + " rad/s";
+            return gyro.ToString("F") + " rad/s";
         }
 
-        public static string formatAngle(int angle)
+        public static string FormatAngle(float angle)
         {
-            return angle + "°";
+            return (int)angle + "°";
         }
 
-        public static string formatDistanceMeters(double meters)
+        public static string FormatDistanceMeters(double meters)
         {
-            return meters + " m";
+            return meters.ToString("F") + " m";
         }
 
-        public static string formatPressure(double pressure)
+        public static string FormatPressure(double pressure)
         {
-            return pressure + " hPa";
+            return pressure.ToString("F") + " hPa";
         }
 
-        public static string formatTemperature(double temperature)
+        public static string FormatTemperature(double temperature)
         {
-            return temperature + " °C";
+            return temperature.ToString("F") + " °C";
+        }
+
+        public static string FormatByteArray(byte[] bytes)
+        {
+            if (bytes == null)
+            {
+                throw new ArgumentNullException(nameof(bytes));
+            }
+
+            StringBuilder sb = new();
+
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                sb.AppendFormat("{0:x2} ", bytes[i]);
+            }
+
+            return sb.ToString().Trim();
+        }
+
+        public static string FormatLocation(double location)
+        {
+            return location.ToString("#0.000000");
+        }
+
+        public static string FormatDistance(double distance)
+        {
+            if (distance >= 1)
+            {
+                // Value in kilometers.
+                return distance.ToString("#0.000") + " km";
+            }
+            else
+            {
+                // Value in meters.
+                return ((int)(distance * 1000)) + " m";
+            }
         }
     }
 }

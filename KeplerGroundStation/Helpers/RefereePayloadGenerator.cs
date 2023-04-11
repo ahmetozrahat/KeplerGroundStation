@@ -18,7 +18,7 @@ namespace KeplerGroundStation.Helpers
             data[3] = 0x52; // Constant
 
             data[4] = 0x00; // Takim ID = 0
-            data[5] = (byte)rand.Next(1, 255); // Sayac degeri
+            data[5] = (byte)payload.PackageId; // Sayac degeri
 
 
             // Altitude data
@@ -132,11 +132,12 @@ namespace KeplerGroundStation.Helpers
             data[69] = accelZBytes[3];
 
             // Tilt Angle
-            // byte[] accelZBytes = BitConverter.GetBytes(payload.AccelerationZ);
-            data[70] = 0xFF;
-            data[71] = 0xFF;
-            data[72] = 0xFF;
-            data[73] = 0xFF;
+            float tiltAngle = AngleCalculator.CalculateTiltAngle(payload != null ? payload.AccelerationY : 0f, payload != null ? payload.AccelerationZ : 0f);
+            byte[] tiltAngleBytes = BitConverter.GetBytes(payload != null ? tiltAngle : 0f);
+            data[70] = tiltAngleBytes[0];
+            data[71] = tiltAngleBytes[1];
+            data[72] = tiltAngleBytes[2];
+            data[73] = tiltAngleBytes[3];
 
             // Mission Status
             data[74] = 0x01; // Neither of the parachutes are ejected

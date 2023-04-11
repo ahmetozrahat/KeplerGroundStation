@@ -8,11 +8,25 @@ namespace KeplerGroundStation.Model
 {
     public class PayloadData
     {
+        private int _deviceId;
+        public int DeviceId
+        {
+            get { return _deviceId; }
+            set { _deviceId = value; }
+        }
+
         private int _packageId;
         public int PackageId
         {
             get { return _packageId; }
             set { _packageId = value; }
+        }
+
+        private int _flightStatus;
+        public int FlightStatus
+        {
+            get { return _flightStatus; }
+            set { _deviceId = value; }
         }
 
         private double _temperature;
@@ -123,9 +137,11 @@ namespace KeplerGroundStation.Model
             }
         }
 
-        public PayloadData(int PackageId, double Temperature, double Altitude, double Pressure, double GpsLat, double GpsLong, double AccelerationX, double AccelerationY, double AccelerationZ, double GyroX, double GyroY, double GyroZ)
+        public PayloadData(int DeviceId, int PackageId, int FlightStatus, double Temperature, double Altitude, double Pressure, double GpsLat, double GpsLong, double AccelerationX, double AccelerationY, double AccelerationZ, double GyroX, double GyroY, double GyroZ)
         {
+            this.DeviceId = DeviceId;
             this.PackageId = PackageId;
+            this.FlightStatus = FlightStatus;
             this.Temperature = Temperature;
             this.Altitude = Altitude;
             this.Pressure = Pressure;
