@@ -138,11 +138,11 @@
                         <Label DockPanel.Dock="Top" Content="Diğer Ayarlar" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="14"/>
                         <DockPanel Margin="0 16 0 0">
                             <Label Content="Enlem:" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="16" HorizontalAlignment="Left"/>
-                            <TextBox Name="GroundStationLat" Width="150" Height="25" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
+                            <TextBox Name="GroundStationLat" Text="38.769481" Width="150" Height="25" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
                         </DockPanel>
                         <DockPanel Margin="0 8 0 0">
                             <Label Content="Boylam:" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="16" HorizontalAlignment="Left"/>
-                            <TextBox Name="GroundStationLng" Width="150" Height="25" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
+                            <TextBox Name="GroundStationLng" Text="35.583062" Width="150" Height="25" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
                         </DockPanel>
                         <Button Margin="0 16 0 0" Content="KONUMU GÜNCELLE" Style="{StaticResource KeplerButtonStyle}" Command="{Binding Path=UpdateLocationClicked}"/>
                     </StackPanel>
@@ -332,7 +332,7 @@
             <!--Row 2 items-->
             <StackPanel Grid.Column="0" Margin="8" VerticalAlignment="Center">
                 <Label Content="Görev Durumu" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
-                <Label Content="Görev Yükü Fırlatıldı" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
+                <Label Name="FlightStatus" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
             </StackPanel>
             <Label Grid.Column="1" Content="Uçuş Süresi: T+32sn" Foreground="#333" HorizontalAlignment="Center" VerticalAlignment="Center"  Style="{StaticResource KeplerSemiboldFont}" FontSize="24"/>
             <StackPanel Grid.Column="2" Margin="8" VerticalAlignment="Center">

@@ -284,6 +284,7 @@ namespace KeplerGroundStation
                 // Perform the UI updates in a seperate Thread.
                 Dispatcher.Invoke(() =>
                 {
+                    UpdateFlightStatus();
                     UpdatePackageInfo();
                     UpdateTemperature();
                     UpdatePressure();
@@ -297,6 +298,28 @@ namespace KeplerGroundStation
             catch (Exception ex)
             {
                 Trace.WriteLine(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Updates the flight status field in the GUI.
+        /// </summary>
+        private void UpdateFlightStatus()
+        {
+            switch (_payloadData.FlightStatus)
+            {
+                case 1:
+                    FlightStatus.Content = "Paraşütler Açılmadı";
+                    break;
+                case 2:
+                    FlightStatus.Content = "Birincil Paraşüt Açıldı, İkincil Paraşüt Açılmadı";
+                    break;
+                case 3:
+                    FlightStatus.Content = "Birincil Paraşüt Açılmadı, İkincil Paraşüt Açıldı";
+                    break;
+                case 4:
+                    FlightStatus.Content = "Paraşütler Açıldı";
+                    break;
             }
         }
 

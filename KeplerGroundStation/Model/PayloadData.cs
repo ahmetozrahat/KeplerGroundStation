@@ -26,7 +26,7 @@ namespace KeplerGroundStation.Model
         public int FlightStatus
         {
             get { return _flightStatus; }
-            set { _deviceId = value; }
+            set { _flightStatus = value; }
         }
 
         private double _temperature;
