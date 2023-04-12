@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System;
+using System.Collections.Generic;
 
 namespace KeplerGroundStation.Helpers
 {
@@ -45,6 +46,23 @@ namespace KeplerGroundStation.Helpers
             StringBuilder sb = new();
 
             for (int i = 0; i < bytes.Length; i++)
+            {
+                sb.AppendFormat("{0:x2} ", bytes[i]);
+            }
+
+            return sb.ToString().Trim();
+        }
+
+        public static string FormatByteArray(List<byte> bytes)
+        {
+            if (bytes == null)
+            {
+                throw new ArgumentNullException(nameof(bytes));
+            }
+
+            StringBuilder sb = new();
+
+            for (int i = 0; i < bytes.Count; i++)
             {
                 sb.AppendFormat("{0:x2} ", bytes[i]);
             }

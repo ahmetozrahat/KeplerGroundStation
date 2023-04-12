@@ -9,10 +9,11 @@ using GalaSoft.MvvmLight.Command;
 using System.Diagnostics;
 using System.Windows.Media;
 using Microsoft.Maps.MapControl.WPF;
-using System.Windows.Documents;
 using KeplerGroundStation.Helpers;
 using KeplerGroundStation.ViewModel;
 using System.Globalization;
+using System.Collections.Generic;
+using System.Windows.Documents;
 
 namespace KeplerGroundStation
 {
@@ -123,8 +124,9 @@ namespace KeplerGroundStation
 
         private PayloadData _payloadData;
         private System.Timers.Timer _refereeComputerTimer;
-        private byte[] receivedBytes = new byte[52];
-        private int receivedBytesCount = 0;
+
+        private List<byte> _serialData;
+
         double groundLat = 0;
         double groundLon = 0;
 
@@ -132,6 +134,7 @@ namespace KeplerGroundStation
         {
             InitializeComponent();
             DataContext = this;
+            _serialData = new();
 
             _refereeComputerTimer = new System.Timers.Timer();
             _refereeComputerTimer.Interval = 200;
@@ -277,27 +280,52 @@ namespace KeplerGroundStation
             byte[] buffer = new byte[bytesToRead];
             sp.Read(buffer, 0, bytesToRead);
 
-            try
+            for (int i = 0; i < buffer.Length; i++)
             {
-                _payloadData = PayloadParser.ParsePayloadData(buffer);
+                _serialData.Add(buffer[i]);
+            }
 
-                // Perform the UI updates in a seperate Thread.
-                Dispatcher.Invoke(() =>
-                {
-                    UpdateFlightStatus();
-                    UpdatePackageInfo();
-                    UpdateTemperature();
-                    UpdatePressure();
-                    UpdateAltitude();
-                    UpdateMap();
-                    UpdateAccelerationData();
-                    AddRowDataToConsole(buffer);
-                }
-                );
-            } 
-            catch (Exception ex)
+            if (_serialData.Count > 0 &&
+                _serialData[0] != 0x7f &&
+                _serialData[1] != 0x7d
+                )
             {
-                Trace.WriteLine(ex.Message);
+                _serialData.Clear();
+            }
+
+            if (
+                _serialData.Count > 0 &&
+                _serialData[0] == 0x7f &&
+                _serialData[1] == 0x7d &&
+                _serialData[^2] == 0x7d &&
+                _serialData[^1] == 0x7f
+                )
+            {
+                try
+                {
+                    byte[] receivedPayload = _serialData.ToArray();
+                    _payloadData = PayloadParser.ParsePayloadData(receivedPayload);
+                    _serialData.Clear();
+
+                    // Perform the UI updates in a seperate Thread.
+                    Dispatcher.Invoke(() =>
+                    {
+                        UpdateFlightStatus();
+                        UpdatePackageInfo();
+                        UpdateTemperature();
+                        UpdatePressure();
+                        UpdateAltitude();
+                        UpdateMap();
+                        UpdateAccelerationData();
+                        AddRowDataToConsole(receivedPayload);
+                    }
+                    );
+                } catch (Exception ex)
+                {
+                    Trace.WriteLine(ex.Message);
+                    _serialData.Clear();
+                }
+
             }
         }
 
@@ -375,6 +403,7 @@ namespace KeplerGroundStation
 
             RocketGPSLat.Content = DataFormatter.FormatLocation(_payloadData.GpsLat);
             RocketGPSLong.Content = DataFormatter.FormatLocation(_payloadData.GpsLong);
+            RocketGPSAlt.Content = DataFormatter.FormatDistance(_payloadData.GpsAlt);
 
             // Create push pin for ground station.
             Pushpin pinGround = new()

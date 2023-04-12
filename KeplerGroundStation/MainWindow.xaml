@@ -254,7 +254,7 @@
                         <StackPanel>
                             <Label Name="RocketGPSLat" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
                             <Label Name="RocketGPSLong" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
-                            <Label Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
+                            <Label Name="RocketGPSAlt" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
                         </StackPanel>
                     </StackPanel>
                     <!--Divider-->

@@ -77,6 +77,16 @@ namespace KeplerGroundStation.Model
             }
         }
 
+        private double _gpsAlt;
+        public double GpsAlt
+        {
+            get { return _gpsAlt; }
+            set
+            {
+                _gpsAlt = value;
+            }
+        }
+
         private double _accelerationX;
         public double AccelerationX
         {
@@ -137,7 +147,7 @@ namespace KeplerGroundStation.Model
             }
         }
 
-        public PayloadData(int DeviceId, int PackageId, int FlightStatus, double Temperature, double Altitude, double Pressure, double GpsLat, double GpsLong, double AccelerationX, double AccelerationY, double AccelerationZ, double GyroX, double GyroY, double GyroZ)
+        public PayloadData(int DeviceId, int PackageId, int FlightStatus, double Temperature, double Altitude, double Pressure, double GpsLat, double GpsLong, double GpsAlt, double AccelerationX, double AccelerationY, double AccelerationZ, double GyroX, double GyroY, double GyroZ)
         {
             this.DeviceId = DeviceId;
             this.PackageId = PackageId;
@@ -147,6 +157,7 @@ namespace KeplerGroundStation.Model
             this.Pressure = Pressure;
             this.GpsLat = GpsLat;
             this.GpsLong = GpsLong;
+            this.GpsAlt = GpsAlt;
             this.AccelerationX = AccelerationX;
             this.AccelerationY = AccelerationY;
             this.AccelerationZ = AccelerationZ;

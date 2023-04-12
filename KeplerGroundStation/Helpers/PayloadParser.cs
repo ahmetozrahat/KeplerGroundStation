@@ -15,14 +15,15 @@ namespace KeplerGroundStation.Helpers
             double pressure = BitConverter.ToSingle(incomingData, 16) / 100.0;
             double gpsLat = BitConverter.ToSingle(incomingData, 20);
             double gpsLng = BitConverter.ToSingle(incomingData, 24);
-            double accelx = BitConverter.ToSingle(incomingData, 28);
-            double accely = BitConverter.ToSingle(incomingData, 32);
-            double accelz = BitConverter.ToSingle(incomingData, 36);
-            double gyrox = BitConverter.ToSingle(incomingData, 40);
-            double gyroy = BitConverter.ToSingle(incomingData, 44);
-            double gyroz = BitConverter.ToSingle(incomingData, 48);
+            double gpsAlt = BitConverter.ToSingle(incomingData, 28);
+            double accelx = BitConverter.ToSingle(incomingData, 32);
+            double accely = BitConverter.ToSingle(incomingData, 36);
+            double accelz = BitConverter.ToSingle(incomingData, 40);
+            double gyrox = BitConverter.ToSingle(incomingData, 44);
+            double gyroy = BitConverter.ToSingle(incomingData, 48);
+            double gyroz = BitConverter.ToSingle(incomingData, 52);
 
-            return new PayloadData(deviceId, packageId, flightStatus, temperature, altitude, pressure, gpsLat, gpsLng, accelx, accely, accelz, gyrox, gyroy, gyroz);
+            return new PayloadData(deviceId, packageId, flightStatus, temperature, altitude, pressure, gpsLat, gpsLng, gpsAlt, accelx, accely, accelz, gyrox, gyroy, gyroz);
         }
     }
 }
