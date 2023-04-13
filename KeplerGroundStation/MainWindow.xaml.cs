@@ -294,7 +294,7 @@ namespace KeplerGroundStation
             }
 
             if (
-                _serialData.Count > 0 &&
+                _serialData.Count >= 4 &&
                 _serialData[0] == 0x7f &&
                 _serialData[1] == 0x7d &&
                 _serialData[^2] == 0x7d &&
@@ -403,7 +403,7 @@ namespace KeplerGroundStation
 
             RocketGPSLat.Content = DataFormatter.FormatLocation(_payloadData.GpsLat);
             RocketGPSLong.Content = DataFormatter.FormatLocation(_payloadData.GpsLong);
-            RocketGPSAlt.Content = DataFormatter.FormatDistance(_payloadData.GpsAlt);
+            RocketGPSAlt.Content = DataFormatter.FormatDistanceMeters(_payloadData.GpsAlt);
 
             // Create push pin for ground station.
             Pushpin pinGround = new()
@@ -472,6 +472,9 @@ namespace KeplerGroundStation
         /// <param name="data">The incoming data from serial port.</param>
         private void AddRowDataToConsole(byte[] data)
         {
+            if (SerialMonitor.Document.Blocks.Count > 50)
+                SerialMonitor.Document.Blocks.Remove(SerialMonitor.Document.Blocks.FirstBlock);
+
             DateTime dateTime = DateTime.Now;
 
             Run timeStampRun = new("[" + dateTime.ToString("HH:mm:ss") + "]: ")
