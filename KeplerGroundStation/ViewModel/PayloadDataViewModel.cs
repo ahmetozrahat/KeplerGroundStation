@@ -58,7 +58,9 @@ namespace KeplerGroundStation.ViewModel
                     Name = "Basınç",
                     Values = _pressureData,
                     GeometrySize = 0,
-                    Stroke = new SolidColorPaint(SKColors.Aqua) { StrokeThickness = 2 },
+                    Stroke = new SolidColorPaint(SKColors.Magenta) { StrokeThickness = 2 },
+                    Fill = new SolidColorPaint(SKColors.Magenta.WithAlpha(30)),
+                    GeometryStroke = new SolidColorPaint(SKColors.Magenta),
                     DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0)
                 }
             };
@@ -72,7 +74,9 @@ namespace KeplerGroundStation.ViewModel
                     Name = "Bağıl Nem",
                     Values = _humidityData,
                     GeometrySize = 0,
-                    Stroke = new SolidColorPaint(SKColors.Aqua) { StrokeThickness = 2 },
+                    Stroke = new SolidColorPaint(SKColors.Magenta) { StrokeThickness = 2 },
+                    Fill = new SolidColorPaint(SKColors.Magenta.WithAlpha(30)),
+                    GeometryStroke = new SolidColorPaint(SKColors.Magenta),
                     DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0)
                 }
             };
@@ -86,7 +90,9 @@ namespace KeplerGroundStation.ViewModel
                     Name = "Sıcaklık",
                     Values = _temperatureData,
                     GeometrySize = 0,
-                    Stroke = new SolidColorPaint(SKColors.Aqua) { StrokeThickness = 2 },
+                    Stroke = new SolidColorPaint(SKColors.Magenta) { StrokeThickness = 2 },
+                    Fill = new SolidColorPaint(SKColors.Magenta.WithAlpha(30)),
+                    GeometryStroke = new SolidColorPaint(SKColors.Magenta),
                     DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0)
                 }
             };
