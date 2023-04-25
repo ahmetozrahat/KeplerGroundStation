@@ -90,7 +90,16 @@ namespace KeplerGroundStation.ViewModel
             }
         }
 
-        public ObservableCollection<string> SerialPorts { get; } = new ObservableCollection<string>();
+        private ObservableCollection<string> _serialPorts;
+        public ObservableCollection<string> SerialPorts
+        {
+            get { return _serialPorts; }
+            set
+            {
+                _serialPorts = value;
+                OnPropertyChanged(nameof(SerialPorts));
+            }
+        }
 
         public ObservableCollection<int> BaudRates { get; } = new ObservableCollection<int>();
 
@@ -184,6 +193,11 @@ namespace KeplerGroundStation.ViewModel
             {
                 Trace.WriteLine(ex.ToString());
             }
+        }
+
+        public void UpdateSerialPorts()
+        {
+            SerialPorts = new ObservableCollection<string>(SerialPort.GetPortNames());
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

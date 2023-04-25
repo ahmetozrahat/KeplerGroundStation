@@ -8,12 +8,14 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using System.Diagnostics;
 using System.Windows.Media;
-using Microsoft.Maps.MapControl.WPF;
 using KeplerGroundStation.Helpers;
 using KeplerGroundStation.ViewModel;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Windows.Documents;
+using System.Timers;
+using Microsoft.Maps.MapControl.WPF;
+using System.Management;
 
 namespace KeplerGroundStation
 {
@@ -24,6 +26,10 @@ namespace KeplerGroundStation
     {
 
         private SerialPortViewModel _flightComputerSerialPort;
+
+        /// <summary>
+        /// Serial port view model for receiving flight computer data.
+        /// </summary>
         public SerialPortViewModel FlightComputerSerialPort
         {
             get { return _flightComputerSerialPort; }
@@ -35,6 +41,10 @@ namespace KeplerGroundStation
         }
 
         private SerialPortViewModel _refereeComputerSerialPort;
+
+        /// <summary>
+        /// Serial port view model for transmitting referee computer data.
+        /// </summary>
         public SerialPortViewModel RefereeComputerSerialPort
         {
             get { return _refereeComputerSerialPort; }
@@ -45,18 +55,39 @@ namespace KeplerGroundStation
             }
         }
 
-        private RocketDataViewModel _rocketData;
-        public RocketDataViewModel RocketData
+        private RocketDataViewModel _flightComputerData;
+
+        /// <summary>
+        /// View model for holding the Flight computer data. 
+        /// </summary>
+        public RocketDataViewModel FlightComputerData
         {
-            get { return _rocketData; }
+            get { return _flightComputerData; }
             set
             {
-                _rocketData = value;
-                OnPropertyChanged(nameof(RocketData));
+                _flightComputerData = value;
+                OnPropertyChanged(nameof(FlightComputerData));
+            }
+        }
+
+        private PayloadDataViewModel _payloadComputerData;
+        /// <summary>
+        /// View model for holding the Payload computer data.
+        /// </summary>
+        public PayloadDataViewModel PayloadComputerData
+        {
+            get { return _payloadComputerData; }
+            set
+            {
+                _payloadComputerData = value;
+                OnPropertyChanged(nameof(PayloadComputerData));
             }
         }
 
         private ChartsViewModel _charts;
+        /// <summary>
+        /// View model for holding the charts data.
+        /// </summary>
         public ChartsViewModel Charts
         {
             get { return _charts; }
@@ -67,7 +98,24 @@ namespace KeplerGroundStation
             }
         }
 
+        private LocationViewModel _locations;
+        /// <summary>
+        /// View model for holding the location related data.
+        /// </summary>
+        public LocationViewModel Locations
+        {
+            get { return _locations; }
+            set
+            {
+                _locations = value;
+                OnPropertyChanged(nameof(Locations));
+            }
+        }
+
         private ICommand _connectFlightComputerClicked;
+        /// <summary>
+        /// Click event for Flight computer not clicked state.
+        /// </summary>
         public ICommand ConnectFlightComputerClicked
         {
             get { return _connectFlightComputerClicked;}
@@ -79,6 +127,9 @@ namespace KeplerGroundStation
         }
 
         private ICommand _disconnectFlightComputerClicked;
+        /// <summary>
+        /// Click event for Flight computer clicked state.
+        /// </summary>
         public ICommand DisconnectFlightComputerClicked
         {
             get { return _disconnectFlightComputerClicked; }
@@ -90,6 +141,9 @@ namespace KeplerGroundStation
         }
 
         private ICommand _connectRefereeComputerClicked;
+        /// <summary>
+        /// Click event for Referee computer not clicked state.
+        /// </summary>
         public ICommand ConnectRefereeComputerClicked
         {
             get { return _connectRefereeComputerClicked; }
@@ -101,6 +155,9 @@ namespace KeplerGroundStation
         }
 
         private ICommand _disconnectRefereeComputerClicked;
+        /// <summary>
+        /// Click event for Referee computer clicked state.
+        /// </summary>
         public ICommand DisconnectRefereeComputerClicked
         {
             get { return _disconnectRefereeComputerClicked; }
@@ -112,6 +169,9 @@ namespace KeplerGroundStation
         }
 
         private ICommand _updateLocationClicked;
+        /// <summary>
+        /// Click event for Update Location button clicked state.
+        /// </summary>
         public ICommand UpdateLocationClicked
         {
             get { return _updateLocationClicked; }
@@ -122,49 +182,176 @@ namespace KeplerGroundStation
             }
         }
 
-        private PayloadData _payloadData;
-        private System.Timers.Timer _refereeComputerTimer;
+        private FlightComputerPayloadData _flightComputerPayload;
+        /// <summary>
+        /// Payload data for holding the data coming from the Flight Computer.
+        /// </summary>
+        public FlightComputerPayloadData FlightComputerPayload
+        {
+            get { return _flightComputerPayload; }
+            set
+            {
+                _flightComputerPayload = value;
+                OnPropertyChanged(nameof(FlightComputerPayload));
+            }
+        }
+
+        private BackupComputerPayloadData _backupComputerPayload;
+        /// <summary>
+        /// Payload data for holding the data coming from the Backup Computer.
+        /// </summary>
+        public BackupComputerPayloadData BackupComputerPayload
+        {
+            get { return _backupComputerPayload; }
+            set
+            {
+                _backupComputerPayload = value;
+                OnPropertyChanged(nameof(BackupComputerPayload));
+            }
+        }
+
+        private PayloadComputerPayloadData _payloadComputerPayload;
+        /// <summary>
+        /// Payload data for holding the data coming from the Payload Computer.
+        /// </summary>
+        public PayloadComputerPayloadData PayloadComputerPayload
+        {
+            get { return _payloadComputerPayload; }
+            set
+            {
+                _payloadComputerPayload = value;
+                OnPropertyChanged(nameof(PayloadComputerPayload));
+            }
+        }
+
+        private Timer _refereeComputerTimer;
+        /// <summary>
+        /// Timer for creating pulses to send data for Referee Computer.
+        /// </summary>
+        public Timer RefereeComputerTimer
+        {
+            get { return _refereeComputerTimer; }
+            set
+            {
+                _refereeComputerTimer = value;
+                OnPropertyChanged(nameof(RefereeComputerTimer));
+            }
+        }
 
         private List<byte> _serialData;
+        /// <summary>
+        /// Object for holding the incoming data from Serial Port.
+        /// </summary>
+        public List<byte> SerialData
+        {
+            get { return _serialData; }
+            set
+            {
+                _serialData = value;
+                OnPropertyChanged(nameof(SerialData));
+            }
+        }
 
-        double groundLat = 0;
-        double groundLon = 0;
+        private RefereePayloadGenerator _payloadGenerator;
+        /// <summary>
+        /// Object for generating Payloads for Referee Computer.
+        /// </summary>
+        public RefereePayloadGenerator PayloadGenerator
+        {
+            get { return _payloadGenerator; }
+            set
+            {
+                _payloadGenerator = value;
+                OnPropertyChanged(nameof(PayloadGenerator));
+            }
+        }
+
+        private ManagementEventWatcher watcher;
 
         public MainWindow()
         {
             InitializeComponent();
+            StartDeviceWatcher();
             DataContext = this;
-            _serialData = new();
+            
+            InitializeRefereeComputer();
+            InitializeFlightComputer();
+            InitializeObjects();
+            InitializeMap();
+            SetupClickListeners();
+            SetupUpdateGUITimer();
+        }
 
-            _refereeComputerTimer = new System.Timers.Timer();
-            _refereeComputerTimer.Interval = 200;
-            _refereeComputerTimer.Elapsed += RefereeComputerTimer_Tick;
-
-            KeplerMap.ZoomLevel = 15;
-
-            KeplerFlightComputerStateString.Content = "Bağlı Değil";
-            KeplerFlightComputerStateColor.Fill = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+        /// <summary>
+        /// Initializes the Referee Computer related stuff.
+        /// </summary>
+        private void InitializeRefereeComputer()
+        {
+            RefereeComputerTimer = new();
+            RefereeComputerTimer.Interval = 200;
+            RefereeComputerTimer.Elapsed += RefereeComputerTimer_Tick;
 
             RefereeComputerStateString.Content = "Bağlı Değil";
-            RefereeComputerStateColor.Fill = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+            RefereeComputerStateColor.Fill = KeplerColors.Red;
 
-            _connectFlightComputerClicked = new RelayCommand(HandleConnectFlightComputerClicked);
-            _disconnectFlightComputerClicked = new RelayCommand(HandleDisconnectFlightComputerClicked);
+            RefereeComputerSerialPort = new();
+            PayloadGenerator = new();
+        }
 
-            _connectRefereeComputerClicked = new RelayCommand(HandleConnectRefereeComputerClicked);
-            _disconnectRefereeComputerClicked = new RelayCommand(HandleDisconnectRefereeComputerClicked);
-
-            _updateLocationClicked = new RelayCommand(HandleUpdateLocationClicked);
+        /// <summary>
+        /// Initializes the Flight Computer related stuff.
+        /// </summary>
+        private void InitializeFlightComputer()
+        {
+            KeplerFlightComputerStateString.Content = "Bağlı Değil";
+            KeplerFlightComputerStateColor.Fill = KeplerColors.Red;
 
             FlightComputerSerialPort = new SerialPortViewModel(FlightComputerDataReceivedHandler);
-            RefereeComputerSerialPort = new SerialPortViewModel();
+        }
 
-            Charts = new ChartsViewModel();
-            RocketData = new RocketDataViewModel();
+        /// <summary>
+        /// Initializes objects by creating new instances.
+        /// </summary>
+        private void InitializeObjects()
+        {
+            SerialData = new();
+            Charts = new();
+            FlightComputerData = new();
+            PayloadComputerData = new();
+            Locations = new();
+        }
 
-            // Setup timer for updating the UI.
+        /// <summary>
+        /// Initializes the map for showing flight computers inside the map.
+        /// </summary>
+        private void InitializeMap()
+        {
+            KeplerMap.ZoomLevel = 15;
+            Locations.UpdateGroundStationLocation(38.85150386157974, 33.54593931823632);
+            KeplerMap.Children.Add(Locations.GroundStationPin);
+        }
+
+        /// <summary>
+        /// Sets up the click listeners for buttons in the GUI.
+        /// </summary>
+        private void SetupClickListeners()
+        {
+            ConnectFlightComputerClicked = new RelayCommand(HandleConnectFlightComputerClicked);
+            DisconnectFlightComputerClicked = new RelayCommand(HandleDisconnectFlightComputerClicked);
+
+            ConnectRefereeComputerClicked = new RelayCommand(HandleConnectRefereeComputerClicked);
+            DisconnectRefereeComputerClicked = new RelayCommand(HandleDisconnectRefereeComputerClicked);
+
+            UpdateLocationClicked = new RelayCommand(HandleUpdateLocationClicked);
+        }
+
+        /// <summary>
+        /// Sets up timer for updating the GUI.
+        /// </summary>
+        private void SetupUpdateGUITimer()
+        {
             DispatcherTimer dispatcherTimer = new();
-            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            dispatcherTimer.Tick += new EventHandler(DispatcherTimer_Tick);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             dispatcherTimer.Start();
         }
@@ -174,22 +361,75 @@ namespace KeplerGroundStation
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void RefereeComputerTimer_Tick(object sender, System.Timers.ElapsedEventArgs e)
+        private void RefereeComputerTimer_Tick(object sender, ElapsedEventArgs e)
         {
-            byte[] refereePayload = RefereePayloadGenerator.GeneratePayload(_payloadData);
+            byte[] refereePayload = PayloadGenerator.GeneratePayload(FlightComputerPayload, BackupComputerPayload, PayloadComputerPayload);
             RefereeComputerSerialPort.WriteBytes(refereePayload);
         }
 
         /// <summary>
-        /// Updates the UI with randomly generated values.
+        /// Updates the GUI by setting the time information.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        private void dispatcherTimer_Tick(object sender, EventArgs args)
+        private void DispatcherTimer_Tick(object sender, EventArgs args)
         {
             // Set time information.
             KeplerCurrentDate.Content = DateTime.Now.ToString("d MMMM yyyy");
             KeplerCurrentTime.Content = DateTime.Now.ToString("HH:mm:ss");
+
+            KeplerMap.Children.Clear();
+
+            var locations = Locations.GetLocations();
+
+            if (Locations.FlightComputerLocation != null)
+            {
+                Pushpin flightComputerPin = Locations.FlightComputerPin;
+                flightComputerPin.Location = Locations.FlightComputerLocation;
+                flightComputerPin.Content = 1;
+                KeplerMap.Children.Add(flightComputerPin);
+            }
+
+            if (Locations.BackupComputerLocation != null)
+            {
+                Pushpin backupComputerPin = Locations.BackupComputerPin;
+                backupComputerPin.Location = Locations.BackupComputerLocation;
+                backupComputerPin.Content = 2;
+                KeplerMap.Children.Add(backupComputerPin);
+            }
+
+            if (Locations.PayloadComputerLocation != null)
+            {
+                Pushpin payloadComputerPin = Locations.PayloadComputerPin;
+                payloadComputerPin.Location = Locations.PayloadComputerLocation;
+                payloadComputerPin.Content = 3;
+                KeplerMap.Children.Add(payloadComputerPin);
+            }
+
+            if (Locations.GroundStationLocation != null)
+            {
+                Pushpin groundStationPin = Locations.GroundStationPin;
+                groundStationPin.Location = Locations.GroundStationLocation;
+                groundStationPin.Content = 4;
+                KeplerMap.Children.Add(groundStationPin);
+            }
+
+            KeplerMap.SetView(locations, new Thickness(50, 50, 50, 50), 0);
+            Trace.WriteLine("\n");
+        }
+
+        public void StartDeviceWatcher()
+        {
+            WqlEventQuery query = new("SELECT * FROM Win32_DeviceChangeEvent WHERE EventType = 2 or EventType = 3");
+
+            watcher = new ManagementEventWatcher(query);
+            watcher.EventArrived += new EventArrivedEventHandler(DeviceChangeEvent);
+            watcher.Start();
+        }
+
+        private void DeviceChangeEvent(object sender, EventArrivedEventArgs e)
+        {
+            FlightComputerSerialPort.UpdateSerialPorts();
         }
 
         /// ----- Flight Computer Connection Section -----
@@ -200,7 +440,7 @@ namespace KeplerGroundStation
             {
                 FlightComputerSerialPort.Open();
                 KeplerFlightComputerStateString.Content = "Bağlandı";
-                KeplerFlightComputerStateColor.Fill = new SolidColorBrush(Color.FromRgb(0, 255, 0));
+                KeplerFlightComputerStateColor.Fill = KeplerColors.Green;
             } catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
@@ -213,7 +453,7 @@ namespace KeplerGroundStation
             {
                 FlightComputerSerialPort.Close();
                 KeplerFlightComputerStateString.Content = "Bağlı Değil";
-                KeplerFlightComputerStateColor.Fill = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                KeplerFlightComputerStateColor.Fill = KeplerColors.Red;
             } catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
@@ -230,7 +470,7 @@ namespace KeplerGroundStation
             {
                 RefereeComputerSerialPort.Open();
                 RefereeComputerStateString.Content = "Bağlandı";
-                RefereeComputerStateColor.Fill = new SolidColorBrush(Color.FromRgb(0, 255, 0));
+                RefereeComputerStateColor.Fill = KeplerColors.Green;
                 _refereeComputerTimer.Start();
             }
             catch (Exception ex)
@@ -245,7 +485,7 @@ namespace KeplerGroundStation
             {
                 RefereeComputerSerialPort.Close();
                 RefereeComputerStateString.Content = "Bağlı Değil";
-                RefereeComputerStateColor.Fill = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                RefereeComputerStateColor.Fill = KeplerColors.Red;
                 _refereeComputerTimer.Stop();
             }
             catch (Exception ex)
@@ -262,8 +502,21 @@ namespace KeplerGroundStation
         {
             try
             {
-                groundLat = double.Parse(GroundStationLat.Text, CultureInfo.InvariantCulture);
-                groundLon = double.Parse(GroundStationLng.Text, CultureInfo.InvariantCulture);
+                double groundLat = double.Parse(GroundStationLat.Text, CultureInfo.InvariantCulture);
+                double groundLon = double.Parse(GroundStationLng.Text, CultureInfo.InvariantCulture);
+
+                // Clear the pins and add the new ones.
+                if (KeplerMap.Children.Contains(Locations.GroundStationPin))
+                    KeplerMap.Children.Remove(Locations.GroundStationPin);
+
+                Locations.UpdateGroundStationLocation(groundLat, groundLon);
+
+                KeplerMap.Children.Add(Locations.GroundStationPin);
+
+                var locations = Locations.GetLocations();
+
+                // Add the polygon to the map and set the view to zoom properly.
+                KeplerMap.SetView(locations, new Thickness(50, 50, 50, 50), 0);
             } catch (Exception e)
             {
                 Trace.WriteLine(e.ToString());
@@ -282,195 +535,230 @@ namespace KeplerGroundStation
 
             for (int i = 0; i < buffer.Length; i++)
             {
-                _serialData.Add(buffer[i]);
+                SerialData.Add(buffer[i]);
             }
 
-            if (_serialData.Count > 0 &&
-                _serialData[0] != 0x7f &&
-                _serialData[1] != 0x7d
-                )
+            if (SerialData.Count > 0 && SerialData[0] != 0x7f && SerialData[1] != 0x7d)
             {
-                _serialData.Clear();
+                SerialData.Clear();
             }
 
-            if (
-                _serialData.Count >= 4 &&
-                _serialData[0] == 0x7f &&
-                _serialData[1] == 0x7d &&
-                _serialData[^2] == 0x7d &&
-                _serialData[^1] == 0x7f
-                )
+            if (SerialData.Count >= 4 && SerialData[0] == 0x7f && SerialData[1] == 0x7d && SerialData[^2] == 0x7d && SerialData[^1] == 0x7f)
             {
                 try
                 {
                     byte[] receivedPayload = _serialData.ToArray();
-                    _payloadData = PayloadParser.ParsePayloadData(receivedPayload);
-                    _serialData.Clear();
+                    short deviceId = BitConverter.ToInt16(receivedPayload, 2); // Device Id
 
-                    // Perform the UI updates in a seperate Thread.
-                    Dispatcher.Invoke(() =>
+                    switch (deviceId)
                     {
-                        UpdateFlightStatus();
-                        UpdatePackageInfo();
-                        UpdateTemperature();
-                        UpdatePressure();
-                        UpdateAltitude();
-                        UpdateMap();
-                        UpdateAccelerationData();
-                        AddRowDataToConsole(receivedPayload);
+                        case 1:
+                            // Main flight computer
+                            FlightComputerPayload = PayloadParser.ParseFlightComputerPayloadData(receivedPayload);
+                            FlightComputerDataReceived(receivedPayload);
+                            break;
+                        case 2:
+                            // Backup flight computer
+                            BackupComputerPayload = PayloadParser.ParseBackupComputerPayloadData(receivedPayload);
+                            BackupComputerDataReceived(receivedPayload);
+                            break;
+                        case 3:
+                            // Payload flight computer
+                            PayloadComputerPayload = PayloadParser.ParsePayloadComputerPayloadData(receivedPayload);
+                            PayloadComputerDataReceived(receivedPayload);
+                            break;
                     }
-                    );
+                    SerialData.Clear();
                 } catch (Exception ex)
                 {
                     Trace.WriteLine(ex.Message);
-                    _serialData.Clear();
+                    SerialData.Clear();
                 }
 
             }
         }
 
+        // ------------------------------------------------------------
+
         /// <summary>
-        /// Updates the flight status field in the GUI.
+        /// Data received event handler for Flight Computer Data arrives.
+        /// Updates the GUI accordingly with the incoming data.
         /// </summary>
-        private void UpdateFlightStatus()
+        /// <param name="payload"></param>
+        private void FlightComputerDataReceived(byte[] payload)
         {
-            switch (_payloadData.FlightStatus)
+            Dispatcher.Invoke(() =>
             {
-                case 1:
-                    FlightStatus.Content = "Paraşütler Açılmadı";
-                    break;
-                case 2:
-                    FlightStatus.Content = "Birincil Paraşüt Açıldı, İkincil Paraşüt Açılmadı";
-                    break;
-                case 3:
-                    FlightStatus.Content = "Birincil Paraşüt Açılmadı, İkincil Paraşüt Açıldı";
-                    break;
-                case 4:
-                    FlightStatus.Content = "Paraşütler Açıldı";
-                    break;
-            }
+                // Update the Flight Status field.
+                FlightStatus.Content = FlightStatusHelper.GetFlightStatusString(FlightComputerPayload.FlightStatus);
+
+                // Update the Package Number field.
+                RocketPackageNumber.Content = FlightComputerPayload.PackageId;
+                RocketTotalPackageCount.Content = FlightComputerData.IncrementFlightComputerTotalPackageNumber();
+
+                // Update the Temperature field.
+                TemperatureDesc.Content = DataFormatter.FormatTemperature(FlightComputerPayload.Temperature);
+                FlightComputerData.AddTemperatureData(FlightComputerPayload.Temperature);
+
+                // Update the Pressure field.
+                PressureDesc.Content = DataFormatter.FormatPressure(FlightComputerPayload.Pressure);
+                FlightComputerData.AddPressureData(FlightComputerPayload.Pressure);
+
+                // Update the Altitude field.
+                AltitudeDesc.Content = DataFormatter.FormatDistanceMeters(FlightComputerPayload.Altitude);
+                FlightComputerData.AddAltitudeData(FlightComputerPayload.Altitude);
+
+                // Update the Acceleration fields.
+                AccelXLabel.Content = DataFormatter.FormatAcceleration(FlightComputerPayload.AccelerationX);
+                AccelYLabel.Content = DataFormatter.FormatAcceleration(FlightComputerPayload.AccelerationY);
+                AccelZLabel.Content = DataFormatter.FormatAcceleration(FlightComputerPayload.AccelerationZ);
+                GyroXLabel.Content = DataFormatter.FormatGyro(FlightComputerPayload.GyroX);
+                GyroYLabel.Content = DataFormatter.FormatGyro(FlightComputerPayload.GyroY);
+                GyroZLabel.Content = DataFormatter.FormatGyro(FlightComputerPayload.GyroZ);
+
+                float tiltAngle = AngleCalculator.CalculateTiltAngle(FlightComputerPayload.AccelerationY, FlightComputerPayload.AccelerationZ);
+                RocketAngle.Content = DataFormatter.FormatAngle(tiltAngle);
+
+                // Update the Map.
+                UpdateFlightComputerMap();
+
+                // Add raw data to the console.
+                AddRawDataToConsole(payload);
+            });
         }
 
         /// <summary>
-        /// Updates the package info fields in the GUI.
+        /// Data received event handler for Backup Computer Data arrives.
+        /// Updates the GUI accordingly with the incoming data.
         /// </summary>
-        private void UpdatePackageInfo()
+        /// <param name="payload"></param>
+        private void BackupComputerDataReceived(byte[] payload)
         {
-            PackageId.Content = _payloadData.PackageId;
-            TotalPackageCount.Content = RocketData.IncrementTotalPackageNumber();
+            Dispatcher.Invoke(() =>
+            {
+                // Update the Package Number field.
+                RocketBackupPackageNumber.Content = BackupComputerPayload.PackageId;
+                RocketBackupTotalPackageCount.Content = FlightComputerData.IncrementBackupComputerTotalPackageNumber();
+
+                // Update the Map.
+                UpdateBackupComputerMap();
+
+                // Add raw data to the console.
+                AddRawDataToConsole(payload);
+            });
         }
 
         /// <summary>
-        /// Updates the Temperature chart by adding a new observable value to the series.
-        /// It also updates the relative fields of temperature in the GUI.
+        /// Data received event handler for Payload Computer Data arrives.
+        /// Updates the GUI accordingly with the incoming data.
         /// </summary>
-        private void UpdateTemperature()
+        /// <param name="payload"></param>
+        private void PayloadComputerDataReceived(byte[] payload)
         {
-            TemperatureDesc.Content = DataFormatter.FormatTemperature(_payloadData.Temperature);
-            RocketData.AddTemperatureData(_payloadData.Temperature);
-        }
+            Dispatcher.Invoke(() => 
+            {
+                // Update the Package Number field.
+                PayloadPackageNumber.Content = PayloadComputerPayload.PackageId;
+                PayloadTotalPackageCount.Content = PayloadComputerData.IncrementTotalPackageNumber();
 
-        /// <summary>
-        /// Updates the Pressure chart by adding a new observable value to the series.
-        /// It also updates the relative fields of pressure in the GUI.
-        /// </summary>
-        private void UpdatePressure()
-        {
-            PressureDesc.Content = DataFormatter.FormatPressure(_payloadData.Pressure);
-            RocketData.AddPressureData(_payloadData.Pressure);
-        }
+                // Update the Pressure field.
+                PayloadPressureDesc.Content = DataFormatter.FormatPressure(PayloadComputerPayload.Pressure);
+                PayloadComputerData.AddPressureData(PayloadComputerPayload.Pressure);
 
-        /// <summary>
-        /// Updates the Altitude chart by adding a new observable value to the series.
-        /// It also updates the relative fields of altitude in the GUI.
-        /// </summary>
-        private void UpdateAltitude()
-        {
-            AltitudeDesc.Content = DataFormatter.FormatDistanceMeters(_payloadData.Altitude);
-            RocketData.AddAltitudeData(_payloadData.Altitude);
+                // Update the Humidity field.
+                PayloadHumidityDesc.Content = DataFormatter.FormatHumidity(PayloadComputerPayload.Humidity);
+                PayloadComputerData.AddHumidityData(PayloadComputerPayload.Humidity);
+
+                // Update the Temperature Field.
+                PayloadTemperatureDesc.Content = DataFormatter.FormatTemperature(PayloadComputerPayload.Temperature);
+                PayloadComputerData.AddTemperatureData(PayloadComputerPayload.Temperature);
+
+                // Update the Map.
+                UpdatePayloadComputerMap();
+
+                // Add raw data to the console.
+                AddRawDataToConsole(payload);
+            });
         }
 
         /// <summary>
         /// Updates the map with given coordinates in the PayloadData object.
         /// Also updates the GPS Lat and GPS Long in the relative fields of GUI.
         /// </summary>
-        private void UpdateMap()
+        private void UpdateFlightComputerMap()
         {
-            if (_payloadData.GpsLat == 1000 && _payloadData.GpsLong == 1000)
+            if (FlightComputerPayload.GpsLat == 0 && FlightComputerPayload.GpsLng == 0)
             {
                 return;
             }
 
-            RocketGPSLat.Content = DataFormatter.FormatLocation(_payloadData.GpsLat);
-            RocketGPSLong.Content = DataFormatter.FormatLocation(_payloadData.GpsLong);
-            RocketGPSAlt.Content = DataFormatter.FormatDistanceMeters(_payloadData.GpsAlt);
+            RocketGPSLat.Content = DataFormatter.FormatLocation(FlightComputerPayload.GpsLat);
+            RocketGPSLong.Content = DataFormatter.FormatLocation(FlightComputerPayload.GpsLng);
+            RocketGPSAlt.Content = DataFormatter.FormatDistanceMeters(FlightComputerPayload.GpsAlt);
 
-            // Create push pin for ground station.
-            Pushpin pinGround = new()
-            {
-                Location = new Location(groundLat, groundLon),
-                Background = new SolidColorBrush(Color.FromArgb(164, 226, 255, 100))
-            };
-
-            // Create push pin for flight computer.
-            Pushpin pinRocket = new()
-            {
-                Location = new Location(_payloadData.GpsLat, _payloadData.GpsLong),
-                Background = new SolidColorBrush(Color.FromArgb(255, 255, 102, 100))
-            };
-
-            // Clear the pins and add the new ones.
-            KeplerMap.Children.Clear();
-            KeplerMap.Children.Add(pinGround);
-            KeplerMap.Children.Add(pinRocket);
-
-            // Create a polygon consisting of the locations.
-            MapPolygon polygon = new();
-            var locations = new LocationCollection()
-            {
-                new Location(groundLat, groundLon),
-                new Location(_payloadData.GpsLat, _payloadData.GpsLong)
-            };
-
-            // Style the polygon.
-            polygon.Locations = locations;
-            polygon.Fill = new SolidColorBrush(Colors.Red);
-            polygon.Stroke = new SolidColorBrush(Colors.Red);
-            polygon.StrokeThickness = 3;
-            polygon.Opacity = 1;
-            
-            // Add the polygon to the map and set the view to zoom properly.
-            KeplerMap.Children.Add(polygon);
-            KeplerMap.SetView(locations, new Thickness(50, 50, 50, 50), 0);
+            Locations.UpdateFlightComputerLocation(FlightComputerPayload.GpsLat, FlightComputerPayload.GpsLng);
 
             // Calculate the distance between two coordinates and update it in the GUI.
-            double distance = DistanceCalculator.GetDistanceDifference(groundLat, groundLon, _payloadData.GpsLat, _payloadData.GpsLong);
-            DistanceDesc.Content = DataFormatter.FormatDistance(distance);
+            double distance = DistanceCalculator.GetDistanceDifference(
+                Locations.GroundStationLocation.Latitude,
+                Locations.GroundStationLocation.Longitude,
+                Locations.FlightComputerLocation.Latitude,
+                Locations.FlightComputerLocation.Longitude
+                );
+            RocketGPSDistance.Content = DataFormatter.FormatDistance(distance);
         }
 
-        /// <summary>
-        /// Updates the acceleration and gyro data in the respective fields in GUI.
-        /// Gets the values from the given PayloadData object.
-        /// </summary>
-        private void UpdateAccelerationData()
+        private void UpdateBackupComputerMap()
         {
-            AccelXLabel.Content = DataFormatter.FormatAcceleration(_payloadData.AccelerationX);
-            AccelYLabel.Content = DataFormatter.FormatAcceleration(_payloadData.AccelerationY);
-            AccelZLabel.Content = DataFormatter.FormatAcceleration(_payloadData.AccelerationZ);
-            GyroXLabel.Content = DataFormatter.FormatGyro(_payloadData.GyroX);
-            GyroYLabel.Content = DataFormatter.FormatGyro(_payloadData.GyroY);
-            GyroZLabel.Content = DataFormatter.FormatGyro(_payloadData.GyroZ);
+            if (BackupComputerPayload.GpsLat == 0 && BackupComputerPayload.GpsLng == 0)
+            {
+                return;
+            }
 
-            float tiltAngle = AngleCalculator.CalculateTiltAngle(_payloadData.AccelerationY, _payloadData.AccelerationZ);
-            RocketAngle.Content = DataFormatter.FormatAngle(tiltAngle);
+            RocketBackupGPSLat.Content = DataFormatter.FormatLocation(BackupComputerPayload.GpsLat);
+            RocketBackupGPSLng.Content = DataFormatter.FormatLocation(BackupComputerPayload.GpsLng);
+            RocketBackupGPSAlt.Content = DataFormatter.FormatDistanceMeters(BackupComputerPayload.GpsAlt);
+
+            Locations.UpdateBackupComputerLocation(BackupComputerPayload.GpsLat, BackupComputerPayload.GpsLng);
+
+            // Calculate the distance between two coordinates and update it in the GUI.
+            double distance = DistanceCalculator.GetDistanceDifference(
+                Locations.GroundStationLocation.Latitude,
+                Locations.GroundStationLocation.Longitude,
+                Locations.BackupComputerLocation.Latitude,
+                Locations.BackupComputerLocation.Longitude
+                );
+            RocketBackupGPSDistance.Content = DataFormatter.FormatDistance(distance);
         }
 
+        private void UpdatePayloadComputerMap()
+        {
+            if (PayloadComputerPayload.GpsLat == 0 && PayloadComputerPayload.GpsLng == 0)
+            {
+                return;
+            }
+
+            PayloadGPSLat.Content = DataFormatter.FormatLocation(PayloadComputerPayload.GpsLat);
+            PayloadGPSLng.Content = DataFormatter.FormatLocation(PayloadComputerPayload.GpsLng);
+            PayloadGPSAlt.Content = DataFormatter.FormatDistanceMeters(PayloadComputerPayload.GpsAlt);
+
+            Locations.UpdatePayloadComputerLocation(PayloadComputerPayload.GpsLat, PayloadComputerPayload.GpsLng);
+
+            // Calculate the distance between two coordinates and update it in the GUI.
+            double distance = DistanceCalculator.GetDistanceDifference(
+                Locations.GroundStationLocation.Latitude,
+                Locations.GroundStationLocation.Longitude,
+                Locations.PayloadComputerLocation.Latitude,
+                Locations.PayloadComputerLocation.Longitude
+                );
+            PayloadGPSDistance.Content = DataFormatter.FormatDistance(distance);
+        }
 
         /// <summary>
         /// Prints the raw incoming data to the console with formatted output.
         /// </summary>
         /// <param name="data">The incoming data from serial port.</param>
-        private void AddRowDataToConsole(byte[] data)
+        private void AddRawDataToConsole(byte[] data)
         {
             if (SerialMonitor.Document.Blocks.Count > 50)
                 SerialMonitor.Document.Blocks.Remove(SerialMonitor.Document.Blocks.FirstBlock);

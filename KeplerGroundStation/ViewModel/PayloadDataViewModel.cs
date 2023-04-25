@@ -1,50 +1,30 @@
-﻿using LiveChartsCore.Defaults;
-using LiveChartsCore;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using LiveChartsCore;
+using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView;
 using SkiaSharp;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace KeplerGroundStation.ViewModel
 {
-    public class RocketDataViewModel: INotifyPropertyChanged
+    public class PayloadDataViewModel: INotifyPropertyChanged
     {
 
-        private int _flightComputerTotalPackageNumber;
+        private int _totalPackageNumber;
 
         /// <summary>
-        /// Total package number of Flight Computer.
+        /// Total package number of payload data.
         /// </summary>
-        public int FlightComputerTotalPackageNumber
+        public int TotalPackageNumber
         {
-            get { return _flightComputerTotalPackageNumber; }
+            get { return _totalPackageNumber; }
             set
             {
-                _flightComputerTotalPackageNumber = value;
-                OnPropertyChanged(nameof(FlightComputerTotalPackageNumber));
+                _totalPackageNumber = value;
+                OnPropertyChanged(nameof(TotalPackageNumber));
             }
         }
-
-        private int _backupComputerTotalPackageNumber;
-
-        /// <summary>
-        /// Total package number of Backup Computer.
-        /// </summary>
-        public int BackupComputerTotalPackageNumber
-        {
-            get { return _backupComputerTotalPackageNumber; }
-            set
-            {
-                _backupComputerTotalPackageNumber = value;
-                OnPropertyChanged(nameof(BackupComputerTotalPackageNumber));
-            }
-        }
-
-        /// <summary>
-        /// An observable collection for holding the altitude data.
-        /// </summary>
-        private ObservableCollection<ObservableValue> _altitudeData;
 
         /// <summary>
         /// An observable collection for holding the pressure data.
@@ -52,36 +32,24 @@ namespace KeplerGroundStation.ViewModel
         private ObservableCollection<ObservableValue> _pressureData;
 
         /// <summary>
-        /// An observable collection for holding the pressure data.
+        /// An observable collection for holding the humidity data.
+        /// </summary>
+        private ObservableCollection<ObservableValue> _humidityData;
+
+        /// <summary>
+        /// An observable collection for holding the temperature data.
         /// </summary>
         private ObservableCollection<ObservableValue> _temperatureData;
 
-        public ObservableCollection<ISeries> AltitudeSeries { get; set; }
-
         public ObservableCollection<ISeries> PressureSeries { get; set; }
+
+        public ObservableCollection<ISeries> HumiditySeries { get; set; }
 
         public ObservableCollection<ISeries> TemperatureSeries { get; set; }
 
-        public RocketDataViewModel()
+        public PayloadDataViewModel()
         {
-            _flightComputerTotalPackageNumber = 0;
-            _backupComputerTotalPackageNumber = 0;
-
-            // Create altitude chart.
-            _altitudeData = new ObservableCollection<ObservableValue>();
-            AltitudeSeries = new ObservableCollection<ISeries>
-            {
-                new LineSeries<ObservableValue>
-                {
-                    Name = "İrtifa",
-                    Values = _altitudeData,
-                    GeometrySize = 0,
-                    Stroke = new SolidColorPaint(SKColors.Aqua) { StrokeThickness = 2 },
-                    DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0)
-                }
-            };
-
-            // Create pressure chart.
+            // Create humidity chart.
             _pressureData = new ObservableCollection<ObservableValue>();
             PressureSeries = new ObservableCollection<ISeries>
             {
@@ -89,6 +57,20 @@ namespace KeplerGroundStation.ViewModel
                 {
                     Name = "Basınç",
                     Values = _pressureData,
+                    GeometrySize = 0,
+                    Stroke = new SolidColorPaint(SKColors.Aqua) { StrokeThickness = 2 },
+                    DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0)
+                }
+            };
+
+            // Create humidity chart.
+            _humidityData = new ObservableCollection<ObservableValue>();
+            HumiditySeries = new ObservableCollection<ISeries>
+            {
+                new LineSeries<ObservableValue>
+                {
+                    Name = "Bağıl Nem",
+                    Values = _humidityData,
                     GeometrySize = 0,
                     Stroke = new SolidColorPaint(SKColors.Aqua) { StrokeThickness = 2 },
                     DataPadding = new LiveChartsCore.Drawing.LvcPoint(0, 0)
@@ -110,25 +92,9 @@ namespace KeplerGroundStation.ViewModel
             };
         }
 
-        public int IncrementFlightComputerTotalPackageNumber()
+        public int IncrementTotalPackageNumber()
         {
-            return ++_flightComputerTotalPackageNumber;
-        }
-
-        public int IncrementBackupComputerTotalPackageNumber()
-        {
-            return ++_backupComputerTotalPackageNumber;
-        }
-
-        /// <summary>
-        /// Add altitude data and trim if the data exceeds the limits.
-        /// </summary>
-        /// <param name="altitude"></param>
-        public void AddAltitudeData(double altitude)
-        {
-            _altitudeData.Add(new(altitude));
-            if (_altitudeData.Count > 50)
-                _altitudeData.RemoveAt(0);
+            return ++_totalPackageNumber;
         }
 
         /// <summary>
@@ -140,6 +106,17 @@ namespace KeplerGroundStation.ViewModel
             _pressureData.Add(new(pressure));
             if (_pressureData.Count > 50)
                 _pressureData.RemoveAt(0);
+        }
+
+        /// <summary>
+        /// Add humidity data and trim if the data exceeds the limits.
+        /// </summary>
+        /// <param name="humidity"></param>
+        public void AddHumidityData(double humidity)
+        {
+            _humidityData.Add(new(humidity));
+            if (_humidityData.Count > 50)
+                _humidityData.RemoveAt(0);
         }
 
         /// <summary>

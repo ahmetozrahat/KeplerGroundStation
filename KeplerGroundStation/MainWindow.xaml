@@ -32,12 +32,12 @@
             </Grid.ColumnDefinitions>
 
             <!--Row 0 items-->
-            <Image Grid.Column="0" Source="pack://application:,,,/Images/Kepler_Logo.png" RenderOptions.BitmapScalingMode="HighQuality" Margin="0 16 0 16"></Image>
+            <Image Grid.Column="0" Source="pack://application:,,,/Images/Kepler_Logo.png" RenderOptions.BitmapScalingMode="HighQuality" Margin="0 4 0 4"></Image>
             <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Label Content="Kepler Roket Takımı Yer İstasyonu Yazılımı" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="24"/>
                 <Label Content="v2.0" Foreground="DarkGray" HorizontalAlignment="Center" Style="{StaticResource KeplerMediumFont}" FontSize="24"/>
             </StackPanel>
-            <Image Grid.Column="2" Source="pack://application:,,,/Images/Teknofest_Logo.png" RenderOptions.BitmapScalingMode="HighQuality" Margin="0 16 0 16"></Image>
+            <Image Grid.Column="2" Source="pack://application:,,,/Images/Teknofest_Logo.png" RenderOptions.BitmapScalingMode="HighQuality" Margin="0 4 0 4"></Image>
         </Grid>
 
         <Grid Grid.Row="1">
@@ -138,11 +138,11 @@
                         <Label DockPanel.Dock="Top" Content="Diğer Ayarlar" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="14"/>
                         <DockPanel Margin="0 16 0 0">
                             <Label Content="Enlem:" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="16" HorizontalAlignment="Left"/>
-                            <TextBox Name="GroundStationLat" Text="38.769481" Width="150" Height="25" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
+                            <TextBox Name="GroundStationLat" Text="38.713666" Width="150" Height="25" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
                         </DockPanel>
                         <DockPanel Margin="0 8 0 0">
                             <Label Content="Boylam:" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="16" HorizontalAlignment="Left"/>
-                            <TextBox Name="GroundStationLng" Text="35.583062" Width="150" Height="25" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
+                            <TextBox Name="GroundStationLng" Text="35.532060" Width="150" Height="25" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
                         </DockPanel>
                         <Button Margin="0 16 0 0" Content="KONUMU GÜNCELLE" Style="{StaticResource KeplerButtonStyle}" Command="{Binding Path=UpdateLocationClicked}"/>
                     </StackPanel>
@@ -164,19 +164,19 @@
                 <DockPanel Grid.Row="0" Margin="16">
                     <Label DockPanel.Dock="Top" Content="Roket İrtifa Grafiği" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
                     <Label Name="AltitudeDesc" DockPanel.Dock="Top" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
-                    <lvc:CartesianChart Series="{Binding Path=RocketData.AltitudeSeries}" XAxes="{Binding Path=Charts.XAxesAltitude}" YAxes="{Binding Path=Charts.YAxesAltitude}"/>
+                    <lvc:CartesianChart Series="{Binding Path=FlightComputerData.AltitudeSeries}" XAxes="{Binding Path=Charts.XAxesAltitude}" YAxes="{Binding Path=Charts.YAxesAltitude}"/>
                 </DockPanel>
 
                 <DockPanel Grid.Row="1" Margin="16">
                     <Label DockPanel.Dock="Top" Content="Roket Basınç Grafiği" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
                     <Label Name="PressureDesc" DockPanel.Dock="Top" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
-                    <lvc:CartesianChart Series="{Binding Path=RocketData.PressureSeries}" XAxes="{Binding Path=Charts.XAxesPressure}" YAxes="{Binding Path=Charts.YAxesPressure}"/>
+                    <lvc:CartesianChart Series="{Binding Path=FlightComputerData.PressureSeries}" XAxes="{Binding Path=Charts.XAxesPressure}" YAxes="{Binding Path=Charts.YAxesPressure}"/>
                 </DockPanel>
 
                 <DockPanel Grid.Row="2" Margin="16">
                     <Label DockPanel.Dock="Top" Content="Roket Sıcaklık Grafiği" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
                     <Label Name="TemperatureDesc" DockPanel.Dock="Top" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
-                    <lvc:CartesianChart Series="{Binding Path=RocketData.TemperatureSeries}" XAxes="{Binding Path=Charts.XAxesTemperature}" YAxes="{Binding Path=Charts.YAxesTemperature}"/>
+                    <lvc:CartesianChart Series="{Binding Path=FlightComputerData.TemperatureSeries}" XAxes="{Binding Path=Charts.XAxesTemperature}" YAxes="{Binding Path=Charts.YAxesTemperature}"/>
                 </DockPanel>
             </Grid>
 
@@ -193,26 +193,27 @@
 
                 <DockPanel Grid.Row="0" Margin="16">
                     <Label DockPanel.Dock="Top" Content="Görev Yükü Basınç Grafiği" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
-                    <Label Name="AltitudeDesc2" DockPanel.Dock="Top" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
-                    <lvc:CartesianChart  XAxes="{Binding Path=Charts.XAxesPayloadPressure}" YAxes="{Binding Path=Charts.YAxesPayloadPressure}"/>
+                    <Label Name="PayloadPressureDesc" DockPanel.Dock="Top" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
+                    <lvc:CartesianChart Series="{Binding Path=PayloadComputerData.PressureSeries}" XAxes="{Binding Path=Charts.XAxesPayloadPressure}" YAxes="{Binding Path=Charts.YAxesPayloadPressure}"/>
                 </DockPanel>
 
                 <DockPanel Grid.Row="1" Margin="16">
                     <Label DockPanel.Dock="Top" Content="Görev Yükü Nem Grafiği" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
-                    <Label Name="PressureDesc2" DockPanel.Dock="Top" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
-                    <lvc:CartesianChart  XAxes="{Binding Path=Charts.XAxesHumidity}" YAxes="{Binding Path=Charts.YAxesHumidity}"/>
+                    <Label Name="PayloadHumidityDesc" DockPanel.Dock="Top" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
+                    <lvc:CartesianChart Series="{Binding Path=PayloadComputerData.HumiditySeries}" XAxes="{Binding Path=Charts.XAxesHumidity}" YAxes="{Binding Path=Charts.YAxesHumidity}"/>
                 </DockPanel>
 
                 <DockPanel Grid.Row="2" Margin="16">
                     <Label DockPanel.Dock="Top" Content="Görev Yükü Sıcaklık Grafiği" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
-                    <Label Name="TemperatureDesc2" DockPanel.Dock="Top" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
-                    <lvc:CartesianChart  XAxes="{Binding Path=Charts.XAxesPayloadTemperature}" YAxes="{Binding Path=Charts.YAxesPayloadTemperature}"/>
+                    <Label Name="PayloadTemperatureDesc" DockPanel.Dock="Top" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
+                    <lvc:CartesianChart Series="{Binding Path=PayloadComputerData.TemperatureSeries}" XAxes="{Binding Path=Charts.XAxesPayloadTemperature}" YAxes="{Binding Path=Charts.YAxesPayloadTemperature}"/>
                 </DockPanel>
             </Grid>
 
             <Grid Grid.Column="3">
                 <Border Grid.Row="0" BorderThickness="1" BorderBrush="Black"/>
 
+                <ScrollViewer>
                 <StackPanel Grid.Row="0" Orientation="Vertical" Margin="16">
                     <StackPanel Orientation="Horizontal">
                         <!--Acceleration Section-->
@@ -247,14 +248,20 @@
                     <StackPanel Orientation="Horizontal">
                         <!--Rocket GPS Section-->
                         <StackPanel>
+                            <Label Content="Paket Numarası: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
+                            <Label Content="Toplam Alınan Paket: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
                             <Label Content="Roket GPS Enlem: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
                             <Label Content="Roket GPS Boylam: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
                             <Label Content="Roket GPS İrtifa: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
+                            <Label Content="Mesafe: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
                         </StackPanel>
                         <StackPanel>
+                            <Label Name="RocketPackageNumber" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
+                            <Label Name="RocketTotalPackageCount" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
                             <Label Name="RocketGPSLat" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
                             <Label Name="RocketGPSLong" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
                             <Label Name="RocketGPSAlt" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
+                            <Label Name="RocketGPSDistance"  Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
                         </StackPanel>
                     </StackPanel>
                     <!--Divider-->
@@ -262,14 +269,20 @@
                     <StackPanel Orientation="Horizontal">
                         <!--Rocket GPS Section-->
                         <StackPanel>
+                            <Label Content="Paket Numarası: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
+                            <Label Content="Toplam Alınan Paket: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
                             <Label Content="Roket Yedek GPS Enlem: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
                             <Label Content="Roket Yedek GPS Boylam: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
                             <Label Content="Roket Yedek GPS İrtifa: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
+                            <Label Content="Mesafe: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
                         </StackPanel>
                         <StackPanel>
-                            <Label Name="RocketSecondGPSLat" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
-                            <Label Name="RocketSecondGPSLong" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
-                            <Label Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
+                            <Label Name="RocketBackupPackageNumber" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
+                            <Label Name="RocketBackupTotalPackageCount" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
+                            <Label Name="RocketBackupGPSLat" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
+                            <Label Name="RocketBackupGPSLng" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
+                            <Label Name="RocketBackupGPSAlt" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
+                            <Label Name="RocketBackupGPSDistance"  Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
                         </StackPanel>
                     </StackPanel>
                     <!--Divider-->
@@ -277,27 +290,24 @@
                     <StackPanel Orientation="Horizontal">
                         <!--Payload GPS Section-->
                         <StackPanel>
+                            <Label Content="Paket Numarası: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
+                            <Label Content="Toplam Alınan Paket: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
                             <Label Content="G.Yük GPS Enlem: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
                             <Label Content="G.Yük GPS Boylam: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
                             <Label Content="G.Yük GPS İrtifa: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
+                            <Label Content="Mesafe: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}"/>
                         </StackPanel>
                         <StackPanel>
-                            <Label Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
-                            <Label Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
-                            <Label Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
+                            <Label Name="PayloadPackageNumber" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
+                            <Label Name="PayloadTotalPackageCount" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
+                            <Label Name="PayloadGPSLat" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
+                            <Label Name="PayloadGPSLng" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
+                            <Label Name="PayloadGPSAlt" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
+                            <Label Name="PayloadGPSDistance"  Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}"/>
                         </StackPanel>
                     </StackPanel>
-                    <!--Divider-->
-                    <Rectangle HorizontalAlignment="Stretch"  Fill="LightGray" Height="1" Margin="0 16 0 16"/>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Paket Numarası: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
-                        <Label Name="PackageId" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}" FontSize="16"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Toplam Alınan Paket: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
-                        <Label Name="TotalPackageCount" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}" FontSize="16"/>
-                    </StackPanel>
                 </StackPanel>
+             </ScrollViewer>
                 
             </Grid>
 
@@ -306,14 +316,20 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="16*"></RowDefinition>
-                        <RowDefinition Height="2*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
                         <RowDefinition Height="16*"></RowDefinition>
                     </Grid.RowDefinitions>
 
                     <m:Map Name="KeplerMap" Grid.Row="0" Margin="16" Center="38.708300, 35.524262" Mode="AerialWithLabels" ZoomLevel="17" CredentialsProvider="b51vpUNL005aRs51cA2u~kbdm0iklyIh0R4Gz9KpIKw~ApvP4N6ipYiycwzwi03SSGYIpsNORpE09v9ydLKb9J6Y4aWmRt_YtAQiGlYWPwm6"/>
-                    <StackPanel Grid.Row="1" Margin="16 0 16 0" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Label Content="Mesafe: " Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
-                        <Label Name="DistanceDesc"  Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}" FontSize="16"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="16 0 16 0" VerticalAlignment="Center">
+                        <Ellipse Width="16" Height="16" Fill="#FF0000" Margin="8 0 0 0"/>
+                        <Label Content="Ana Sistem" Style="{StaticResource KeplerMediumFont}"/>
+                        <Ellipse Width="16" Height="16" Fill="#00FF00" Margin="8 0 0 0"/>
+                        <Label Content="Yedek Sistem" Style="{StaticResource KeplerMediumFont}"/>
+                        <Ellipse Width="16" Height="16" Fill="#0000FF" Margin="8 0 0 0"/>
+                        <Label Content="Görev Yükü" Style="{StaticResource KeplerMediumFont}"/>
+                        <Ellipse Width="16" Height="16" Fill="#FF00FF" Margin="8 0 0 0"/>
+                        <Label Content="Yer İstasyonu" Style="{StaticResource KeplerMediumFont}"/>
                     </StackPanel>
                     <RichTextBox x:Name="SerialMonitor" Grid.Row="2" Margin="16" Background="Transparent">
                         <FlowDocument Style="{StaticResource KeplerMediumFontFlow}" FontSize="14" Foreground="#333"/>
@@ -324,9 +340,9 @@
 
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="3*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
             <!--Row 2 items-->
@@ -334,7 +350,7 @@
                 <Label Content="Görev Durumu" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
                 <Label Name="FlightStatus" Content="-" Foreground="DarkGray" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>
             </StackPanel>
-            <Label Grid.Column="1" Content="Uçuş Süresi: T+32sn" Foreground="#333" HorizontalAlignment="Center" VerticalAlignment="Center"  Style="{StaticResource KeplerSemiboldFont}" FontSize="24"/>
+            <Label Grid.Column="1" Content="&quot;Semalarımda hür ve bağımsız olacağım milletimizin iradesinin ifadesidir.&quot;" Foreground="#333" HorizontalAlignment="Center" VerticalAlignment="Center"  Style="{StaticResource KeplerSemiboldFont}" FontSize="20"/>
             <StackPanel Grid.Column="2" Margin="8" VerticalAlignment="Center">
                 <Label Name="KeplerCurrentDate" Foreground="#333" HorizontalAlignment="Right" Style="{StaticResource KeplerSemiboldFont}" FontSize="16"/>
                 <Label Name="KeplerCurrentTime"  Foreground="DarkGray" HorizontalAlignment="Right" Style="{StaticResource KeplerMediumFont}" FontSize="14" Margin="0 -8 0 0"/>

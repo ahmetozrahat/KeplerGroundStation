@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KeplerGroundStation.Model
+﻿namespace KeplerGroundStation.Model
 {
-    public class PayloadData
+    public class FlightComputerPayloadData
     {
         private int _deviceId;
         public int DeviceId
@@ -67,13 +61,13 @@ namespace KeplerGroundStation.Model
             }
         }
 
-        private double _gpsLong;
-        public double GpsLong
+        private double _gpsLng;
+        public double GpsLng
         {
-            get { return _gpsLong; }
+            get { return _gpsLng; }
             set
             {
-                _gpsLong = value;
+                _gpsLng = value;
             }
         }
 
@@ -147,7 +141,7 @@ namespace KeplerGroundStation.Model
             }
         }
 
-        public PayloadData(int DeviceId, int PackageId, int FlightStatus, double Temperature, double Altitude, double Pressure, double GpsLat, double GpsLong, double GpsAlt, double AccelerationX, double AccelerationY, double AccelerationZ, double GyroX, double GyroY, double GyroZ)
+        public FlightComputerPayloadData(int DeviceId, int PackageId, int FlightStatus, double Temperature, double Altitude, double Pressure, double GpsLat, double GpsLng, double GpsAlt, double AccelerationX, double AccelerationY, double AccelerationZ, double GyroX, double GyroY, double GyroZ)
         {
             this.DeviceId = DeviceId;
             this.PackageId = PackageId;
@@ -156,7 +150,7 @@ namespace KeplerGroundStation.Model
             this.Altitude = Altitude;
             this.Pressure = Pressure;
             this.GpsLat = GpsLat;
-            this.GpsLong = GpsLong;
+            this.GpsLng = GpsLng;
             this.GpsAlt = GpsAlt;
             this.AccelerationX = AccelerationX;
             this.AccelerationY = AccelerationY;

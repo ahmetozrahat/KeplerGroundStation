@@ -36,6 +36,11 @@ namespace KeplerGroundStation.Helpers
             return temperature.ToString("F") + " °C";
         }
 
+        public static string FormatHumidity(double temperature)
+        {
+            return "%" + temperature.ToString("F");
+        }
+
         public static string FormatByteArray(byte[] bytes)
         {
             if (bytes == null)
