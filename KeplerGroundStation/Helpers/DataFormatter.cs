@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace KeplerGroundStation.Helpers
 {
@@ -8,12 +9,12 @@ namespace KeplerGroundStation.Helpers
     {
         public static string FormatAcceleration(double accel)
         {
-            return accel.ToString("F") + " m/s";
+            return accel.ToString("F", CultureInfo.InvariantCulture) + " m/s";
         }
 
         public static string FormatGyro(double gyro)
         {
-            return gyro.ToString("F") + " rad/s";
+            return gyro.ToString("F", CultureInfo.InvariantCulture) + " rad/s";
         }
 
         public static string FormatAngle(float angle)
@@ -23,22 +24,22 @@ namespace KeplerGroundStation.Helpers
 
         public static string FormatDistanceMeters(double meters)
         {
-            return meters.ToString("F") + " m";
+            return meters.ToString("F", CultureInfo.InvariantCulture) + " m";
         }
 
         public static string FormatPressure(double pressure)
         {
-            return pressure.ToString("F") + " hPa";
+            return pressure.ToString("F", CultureInfo.InvariantCulture) + " hPa";
         }
 
         public static string FormatTemperature(double temperature)
         {
-            return temperature.ToString("F") + " °C";
+            return temperature.ToString("F", CultureInfo.InvariantCulture) + " °C";
         }
 
         public static string FormatHumidity(double temperature)
         {
-            return "%" + temperature.ToString("F");
+            return "%" + temperature.ToString("F", CultureInfo.InvariantCulture);
         }
 
         public static string FormatByteArray(byte[] bytes)
@@ -77,7 +78,7 @@ namespace KeplerGroundStation.Helpers
 
         public static string FormatLocation(double location)
         {
-            return location.ToString("#0.000000");
+            return location.ToString("#0.000000", CultureInfo.InvariantCulture);
         }
 
         public static string FormatDistance(double distance)
@@ -85,7 +86,7 @@ namespace KeplerGroundStation.Helpers
             if (distance >= 1)
             {
                 // Value in kilometers.
-                return distance.ToString("#0.000") + " km";
+                return distance.ToString("#0.000", CultureInfo.InvariantCulture) + " km";
             }
             else
             {
