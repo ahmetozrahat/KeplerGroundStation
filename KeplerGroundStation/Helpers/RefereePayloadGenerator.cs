@@ -42,7 +42,7 @@ namespace KeplerGroundStation.Helpers
             data[2] = 0x54; // Constant
             data[3] = 0x52; // Constant
 
-            data[4] = 0x00; // Takim ID = 0
+            data[4] = 0x04; // Takim ID = 4
             data[5] = CalculatePackageId(); // Sayac degeri
 
             // Altitude data

@@ -138,11 +138,11 @@
                         <Label DockPanel.Dock="Top" Content="Diğer Ayarlar" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="14"/>
                         <DockPanel Margin="0 16 0 0">
                             <Label Content="Enlem:" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="16" HorizontalAlignment="Left"/>
-                            <TextBox Name="GroundStationLat" Text="38.713666" Width="150" Height="25" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
+                            <TextBox Name="GroundStationLat" Text="38.3983869" Width="150" Height="25" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
                         </DockPanel>
                         <DockPanel Margin="0 8 0 0">
                             <Label Content="Boylam:" Foreground="#333" Style="{StaticResource KeplerSemiboldFont}" FontSize="16" HorizontalAlignment="Left"/>
-                            <TextBox Name="GroundStationLng" Text="35.532060" Width="150" Height="25" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
+                            <TextBox Name="GroundStationLng" Text="33.7109853" Width="150" Height="25" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
                         </DockPanel>
                         <Button Margin="0 16 0 0" Content="KONUMU GÜNCELLE" Style="{StaticResource KeplerButtonStyle}" Command="{Binding Path=UpdateLocationClicked}"/>
                     </StackPanel>
